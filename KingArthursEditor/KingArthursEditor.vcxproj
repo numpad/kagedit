@@ -76,7 +76,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\SFML-2.5.0\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\imgui;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\thor\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\thor\extlibs\aurora\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\sqlite3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\SFML-2.5.0\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\imgui;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\thor\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\thor\extlibs\aurora\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\sqlite3\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\SFML-2.5.0\lib;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\thor\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -103,7 +103,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\SFML-2.5.0\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\imgui;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\thor\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\thor\extlibs\aurora\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\sqlite3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\SFML-2.5.0\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\imgui;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\thor\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\thor\extlibs\aurora\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\sqlite3\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -132,7 +132,13 @@
     <ClCompile Include="lib\imgui\imgui.cpp" />
     <ClCompile Include="lib\imgui\imgui_draw.cpp" />
     <ClCompile Include="lib\imgui\imgui_impl.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\Block.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Map.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Block.hpp" />
+    <ClInclude Include="include\Map.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
