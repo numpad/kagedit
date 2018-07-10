@@ -23,6 +23,7 @@
     <ProjectGuid>{CC6C25D4-2473-4DE0-8B16-C19C09FA2B43}</ProjectGuid>
     <RootNamespace>KingArthursEditor</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <ProjectName>project_flesh</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -76,7 +77,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\SFML-2.5.0\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\imgui;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\thor\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\thor\extlibs\aurora\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\sqlite3\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\SFML-2.5.0\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\imgui;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\thor\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\thor\extlibs\aurora\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\sqlite3\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\glm\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\SFML-2.5.0\lib;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\thor\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -103,7 +104,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\SFML-2.5.0\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\imgui;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\thor\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\thor\extlibs\aurora\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\sqlite3\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\SFML-2.5.0\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\imgui;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\thor\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\thor\extlibs\aurora\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\sqlite3\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\glm\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -132,13 +133,13 @@
     <ClCompile Include="lib\imgui\imgui.cpp" />
     <ClCompile Include="lib\imgui\imgui_draw.cpp" />
     <ClCompile Include="lib\imgui\imgui_impl.cpp" />
-    <ClCompile Include="src\Block.cpp" />
+    <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Map.cpp" />
+    <ClCompile Include="src\Player.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\Block.hpp" />
-    <ClInclude Include="include\Map.hpp" />
+    <ClInclude Include="include\Entity.hpp" />
+    <ClInclude Include="include\Player.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
