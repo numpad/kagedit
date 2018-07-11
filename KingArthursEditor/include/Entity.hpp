@@ -17,9 +17,9 @@ protected:
 
 	void setTexture(const sf::Texture &texture, glm::vec2 origin = glm::vec2(0.5f));
 
+	Entity();
+
 public:
-	
-	Entity() =delete;
 
 	/* position */
 	glm::vec2 getPos();
@@ -36,6 +36,7 @@ public:
 	void setViewDirection(glm::vec2 target_dir);
 
 	/* update/render */
+	virtual void update(float dt);
 	virtual void draw(sf::RenderTarget &);
 };
 

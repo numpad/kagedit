@@ -17,6 +17,10 @@ void Entity::setTexture(const sf::Texture &texture, glm::vec2 origin) {
 	this->sprite.setOrigin(center);
 }
 
+Entity::Entity() {
+
+}
+
 
 /******************\
  * public methods *
@@ -79,6 +83,16 @@ void Entity::setViewDirection(glm::vec2 target_dir) {
 	if (glm::length(target_dir) < STICK_DEAD_RADIUS)
 		return; /* return without updating target dir */
 	this->view_dir = glm::normalize(target_dir);
+}
+
+/**
+ * @brief Update the entity
+ *
+ * 
+ * @param dt Delta Time for variable timestep, in Seconds.
+ */
+void Entity::update(float dt) {
+
 }
 
 void Entity::draw(sf::RenderTarget &target) {

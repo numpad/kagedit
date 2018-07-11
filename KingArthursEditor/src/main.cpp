@@ -98,12 +98,18 @@ int main(int argc, char *argv[]) {
 		
 		/* update */
 		glm::vec2 stick_right = get_axis(0, sf::Joystick::Axis::Z, sf::Joystick::Axis::R);
-		//player.update(dt.asSeconds());
-		//player.setViewDirection(stick_right);
+
+		for (Entity *entity : entities) {
+			entity->update(dt.asSeconds());
+		}
+
+		player->setViewDirection(stick_right);
 		
 		/* render */
 		window.clear(sf::Color(33, 33, 33));
-		//player.draw(window);
+		for (Entity *entity : entities) {
+			entity->draw(window);
+		}
 
 		if (render_imgui) {
 			ImGui::EndFrame();
