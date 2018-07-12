@@ -7,7 +7,10 @@
 #include <imgui_impl.h>
 #include <sqlite3/sqlite3.h>
 
+#include "Entity.hpp"
 #include "Player.hpp"
+#include "Item.hpp"
+#include "ItemGun.hpp"
 
 #if !defined(_WIN32)
 #define sprintf_s sprintf
@@ -46,6 +49,7 @@ int main(int argc, char *argv[]) {
 	sf::RenderWindow window(sf::VideoMode(800, 600), "kageditor " __VERSION__);
 	bool vsync_enabled = true;
 	window.setVerticalSyncEnabled(vsync_enabled);
+	sf::View default_view(sf::FloatRect(0.0f, 0.0f, window.getSize().x, window.getSize().y));
 
 	/* init imgui */
 	ImGui::CreateContext();
@@ -55,6 +59,7 @@ int main(int argc, char *argv[]) {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 	
 	std::vector<Entity *> entities;
+	std::vector<Item *> items;
 	Player *player = new Player(glm::vec2(350.0f));
 
 	entities.push_back(player);
@@ -65,6 +70,8 @@ int main(int argc, char *argv[]) {
 	float dt_sum = 0.0f;
 	while (window.isOpen()) {
 		sf::Time dt = dt_clock.restart();
+		default_view.setSize(window.getSize().x, window.getSize().y);
+		window.setView(default_view);
 
 		static bool close = false, render_imgui = true, render_imgui_toggle = false;
 		if (close) window.close();
@@ -72,6 +79,16 @@ int main(int argc, char *argv[]) {
 
 		if (render_imgui) {
 			ImGui::SFML::Update(window, dt);
+
+			ImGui::Begin("Items");
+				static float _ipos[2];
+				ImGui::Text("Spawn Item:");
+				ImGui::InputFloat2("pos", _ipos);
+				ImGui::SameLine();
+				if (ImGui::Button("Spawn")) {
+					items.push_back(new ItemGun(glm::vec2(_ipos[0], _ipos[1])));
+				}
+			ImGui::End();
 		}
 
 		if (render_imgui && ImGui::BeginMainMenuBar()) {
@@ -105,15 +122,27 @@ int main(int argc, char *argv[]) {
 
 		for (Entity *entity : entities) {
 			entity->update(dt.asSeconds());
+			for (Item *item : items) {
+				if (item->isCollectableBy(*entity)) {
+					item->onEntityNear(*entity);
+				}
+			}
+		}
+		for (Item *item : items) {
+			item->update(dt.asSeconds());
 		}
 
 		player->setViewDirection(stick_right);
 		
 		/* render */
 		window.clear(sf::Color(33, 33, 33));
+		for (Item *item : items) {
+			item->draw(window);
+		}
 		for (Entity *entity : entities) {
 			entity->draw(window);
 		}
+		
 
 		if (render_imgui) {
 			ImGui::EndFrame();
@@ -126,6 +155,9 @@ int main(int argc, char *argv[]) {
 			render_imgui_toggle = false;
 		}
 	}
+
+	for (Entity *e : entities) delete e;
+	for (Item *i : items) delete i;
 
 	ImGui::SFML::Shutdown();
 

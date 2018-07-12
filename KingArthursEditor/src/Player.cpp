@@ -52,10 +52,8 @@ void Player::update(float dt) {
 		axis = easeInOut(axis, b, c, d, exp) * s;
 	}
 
-	/* calculate new position TODO: */
 	this->vel = axis * 3.75f;
-	this->pos += this->vel * (dt * 60.0f);
-	this->vel *= 0.935f;
+	this->updatePhysics(dt);
 	this->sprite.setPosition(this->pos.x, this->pos.y);
 	
 	/* set sprites rotation */
