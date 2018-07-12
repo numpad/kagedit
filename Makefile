@@ -1,12 +1,12 @@
 CC=g++
 CFLAGS=-std=c++14 -Wall -pedantic -ggdb
-INCLUDES=-I KingArthursEditor/lib/imgui/ -I KingArthursEditor/lib/linux/SFML-2.5.0/include/ -I KingArthursEditor/lib/linux/sqlite3/include/
+INCLUDES=-I KingArthursEditor/include/ -I KingArthursEditor/lib/imgui/ -I KingArthursEditor/lib/linux/SFML-2.5.0/include/ -I KingArthursEditor/lib/linux/sqlite3/include/
 LFLAGS=
 LIBS=-lGL -lsfml-window -lsfml-graphics -lsfml-system
-SRC=KingArthursEditor
+SRC=KingArthursEditor/src
 SRCS_LIB=lib/imgui/imgui.cpp lib/imgui/imgui_draw.cpp lib/imgui/imgui_impl.cpp
 SRCS=$(shell find ${SRC}/ -type f -iname "*.cpp")
-OBJS=$(SRCS:.cpp=.o)
+OBJS=$(SRCS:.cpp=.o) $(shell find KingArthursEditor/lib/imgui/ -type f -iname "*.o")
 MAIN=kagedit
 
 .PHONY: clean
