@@ -1,5 +1,6 @@
 #define __VERSION__ "0.0.1"
 #include <iostream>
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <SFML/Graphics.hpp>
 #include <imgui.h>
@@ -8,6 +9,9 @@
 
 #include "Player.hpp"
 
+#if !defined(_WIN32)
+#define sprintf_s sprintf
+#endif
 
 void handle_events(sf::Window &window, bool render_imgui) {
 	sf::Event e;
