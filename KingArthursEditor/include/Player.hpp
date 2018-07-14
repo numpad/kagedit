@@ -11,11 +11,15 @@
 #include <vector>
 
 #include "Entity.hpp"
+#include "Controller.hpp"
+#include "KeyboardController.hpp"
 
 class Player : public Entity {
 	sf::Texture skin_stand, skin_gun;
 	
-	int joystick_id = 0;
+	//int joystick_id = 0;
+	
+	Controller *controller;
 
 public:
 	 

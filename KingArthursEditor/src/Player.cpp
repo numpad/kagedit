@@ -2,7 +2,7 @@
 
 Player::Player(glm::vec2 pos) {
 	this->setPos(pos);
-
+	
 	/* load texture and sprite */
 	assert(this->skin_stand.loadFromFile("assets/images/kenney-topdown/Survivor 1/survivor1_stand.png"));
 	assert(this->skin_gun.loadFromFile("assets/images/kenney-topdown/Survivor 1/survivor1_gun.png"));
@@ -12,6 +12,8 @@ Player::Player(glm::vec2 pos) {
 	/* center origin */
 	this->setTexture(this->skin_stand);
 
+	/* controls */
+	this->controller = new KeyboardController(this);
 }
 
 static float easeInOut(float t, float b, float c, float d, float exp) {
@@ -37,6 +39,9 @@ static glm::vec2 easeInOut(glm::vec2 axis, float b, float c, float d, float exp)
 }
 
 void Player::update(float dt) {
+	controller->readInput();
+	controller->update(dt);
+	/*
 	glm::vec2 axis(0.0f);
 	if (sf::Joystick::isConnected(this->joystick_id)) {
 		axis.x = sf::Joystick::getAxisPosition(this->joystick_id, sf::Joystick::Axis::X) * 0.01f;
@@ -51,15 +56,12 @@ void Player::update(float dt) {
 		static int exp = 4;
 		axis = easeInOut(axis, b, c, d, exp) * s;
 	}
+	*/
 
-	/* calculate new position TODO: */
+	/* calculate new position TODO:
 	this->vel = axis * 3.75f;
 	this->pos += this->vel * (dt * 60.0f);
 	this->vel *= 0.935f;
-	this->sprite.setPosition(this->pos.x, this->pos.y);
-	
-	/* set sprites rotation */
-	static glm::vec2 texture_viewdir(1.0f, 0.0f);
-	this->sprite.setRotation(glm::degrees(this->getViewAngle(texture_viewdir)));
-
+	*/
 }
+

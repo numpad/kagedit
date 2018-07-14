@@ -96,5 +96,7 @@ void Entity::update(float dt) {
 }
 
 void Entity::draw(sf::RenderTarget &target) {
+	this->sprite.setPosition(this->pos.x, this->pos.y);
+	this->sprite.setRotation(glm::degrees(this->getViewAngle()));
 	target.draw(this->sprite);
 }
