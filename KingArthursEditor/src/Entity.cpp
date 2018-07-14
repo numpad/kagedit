@@ -17,6 +17,12 @@ void Entity::setTexture(const sf::Texture &texture, glm::vec2 origin) {
 	this->sprite.setOrigin(center);
 }
 
+void Entity::updatePhysics(float dt_seconds) {
+	/* calculate new position TODO: */
+	this->pos += this->vel * (dt_seconds * 60.0f);
+	this->vel *= 0.935f;
+}
+
 Entity::Entity() {
 
 }
@@ -25,6 +31,10 @@ Entity::Entity() {
 /******************\
  * public methods *
 \******************/
+
+float Entity::distanceTo(Entity &other) {
+	return glm::distance(this->getPos(), other.getPos());
+}
 
 glm::vec2 Entity::getPos() {
 	return this->pos;

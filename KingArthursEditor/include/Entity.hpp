@@ -16,11 +16,15 @@ protected:
 
 	sf::Sprite sprite;
 
+	/* util */
 	void setTexture(const sf::Texture &texture, glm::vec2 origin = glm::vec2(0.5f));
+	void updatePhysics(float dt_seconds);
 
 	Entity();
 
 public:
+	/* util */
+	float distanceTo(Entity &other);
 
 	/* position */
 	glm::vec2 getPos();

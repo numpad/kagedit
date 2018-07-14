@@ -58,10 +58,21 @@ void Player::update(float dt) {
 	}
 	*/
 
+<<<<<<< HEAD
 	/* calculate new position TODO:
 	this->vel = axis * 3.75f;
 	this->pos += this->vel * (dt * 60.0f);
 	this->vel *= 0.935f;
 	*/
+=======
+	this->vel = axis * 3.75f;
+	this->updatePhysics(dt);
+	this->sprite.setPosition(this->pos.x, this->pos.y);
+	
+	/* set sprites rotation */
+	static glm::vec2 texture_viewdir(1.0f, 0.0f);
+	this->sprite.setRotation(glm::degrees(this->getViewAngle(texture_viewdir)));
+
+>>>>>>> b859008699c5237dcb5e7316fcdc83c7a05f3776
 }
 
