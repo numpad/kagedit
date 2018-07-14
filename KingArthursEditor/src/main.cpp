@@ -43,10 +43,12 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 #else
 int main(int argc, char *argv[]) {
 #endif
-	sf::RenderWindow window(sf::VideoMode(800, 600), "kageditor " __VERSION__);
+	sf::RenderWindow window(sf::VideoMode(800, 600), "pflesh " __VERSION__);
 	bool vsync_enabled = true;
 	window.setVerticalSyncEnabled(vsync_enabled);
-
+	sf::View default_view(sf::FloatRect(0.0f, 0.0f, window.getSize().x, window.getSize().y));
+	
+	
 	/* init imgui */
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -66,6 +68,9 @@ int main(int argc, char *argv[]) {
 	while (window.isOpen()) {
 		sf::Time dt = dt_clock.restart();
 
+		default_view.setSize(window.getSize().x, window.getSize().y);
+		window.setView(default_view);
+		
 		static bool close = false, render_imgui = true, render_imgui_toggle = false;
 		if (close) window.close();
 		handle_events(window, render_imgui);
