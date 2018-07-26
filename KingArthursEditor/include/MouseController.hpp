@@ -9,13 +9,13 @@
 class MouseController : public Controller {
 private:
 	glm::vec2 mousepos;
-	sf::Window *window = nullptr;
+	sf::RenderWindow *window = nullptr;
 
 protected:
 	
 public:
 
-	MouseController(Entity *entity, sf::Window *window);
+	MouseController(Entity *entity, sf::RenderWindow *window);
 
 	void readInput();
 	void update(float dt);

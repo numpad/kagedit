@@ -1,5 +1,7 @@
 #define __VERSION__ "0.0.1"
 #include <iostream>
+#include <string>
+
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <SFML/Graphics.hpp>
@@ -50,6 +52,24 @@ glm::vec2 get_axis(unsigned int joystick, sf::Joystick::Axis axis1, sf::Joystick
 		sf::Joystick::getAxisPosition(joystick, axis2) * 0.01f
 	);
 }
+
+struct ball {
+	int x, y;
+	
+	ball(int x = 0, int y = 0) {
+		this->x = x;
+		this->y = y;
+	}
+	
+	void fall() {
+		this->y += 1;
+	}
+
+	void print() {
+		std::cout << x << ", " << y << std::endl;
+	}
+};
+
 #if defined(_WIN32)
 #include <Windows.h>
 #endif
@@ -61,9 +81,23 @@ int main(int argc, char *argv[]) {
 #endif
 
 	sol::state lua;
-	lua.open_libraries(sol::lib::base, sol::lib::io);
-	lua.script("io.read()");
-	
+	lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string, sol::lib::os, sol::lib::math, sol::lib::table);
+	lua.new_usertype<ball>("ball",
+		sol::constructors<ball(), ball(int, int)>(),
+		"x", &ball::x,
+		"y", &ball::y,
+		"fall", &ball::fall,
+		"print", &ball::print
+	);
+
+	for (int i = 0; i < 10; ++i) {
+		using namespace std;
+		cout << "#" << i + 1 << "> ";
+		string l;
+		getline(std::cin, l);
+		lua.script(l);
+	}
+
 	sf::RenderWindow window(sf::VideoMode(800, 600), "p.flesh " __VERSION__);
 	bool vsync_enabled = true;
 	window.setVerticalSyncEnabled(vsync_enabled);
@@ -71,7 +105,7 @@ int main(int argc, char *argv[]) {
 	
 	/* init imgui */
 	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGuiIO &io = ImGui::GetIO(); (void)io;
 	ImGui::SFML::Init(window);
 	ImGui::StyleColorsLight();
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
@@ -86,6 +120,7 @@ int main(int argc, char *argv[]) {
 	sf::Clock dt_clock;
 	int asks = 0, asks_count = 10;
 	float dt_sum = 0.0f;
+
 	while (window.isOpen()) {
 		sf::Time dt = dt_clock.restart();
 		default_view.setSize(window.getSize().x, window.getSize().y);
@@ -108,7 +143,7 @@ int main(int argc, char *argv[]) {
 				}
 				ImGui::Separator();
 
-				static bool controller_keyboard = false;
+				static bool controller_keyboard = true;
 				ImGui::Text("Controls:");
 				if (ImGui::RadioButton("Keyboard", controller_keyboard) && !controller_keyboard) {
 					player->setController(new KeyboardController(player));

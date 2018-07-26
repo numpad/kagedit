@@ -13,7 +13,7 @@ void Player::addController(Controller *c) {
 	this->controllers.push_back(c);
 }
 
-Player::Player(glm::vec2 pos, sf::Window *window) {
+Player::Player(glm::vec2 pos, sf::RenderWindow *window) {
 	this->setPos(pos);
 	
 	/* load texture and sprite */
@@ -26,9 +26,9 @@ Player::Player(glm::vec2 pos, sf::Window *window) {
 	this->setTexture(this->skin_stand);
 
 	/* controls */
-	//this->addController(new KeyboardController(this));
-	//this->addController(new MouseController(this, window));
-	this->addController(new JoystickController(this, 0));
+	this->addController(new KeyboardController(this));
+	this->addController(new MouseController(this, window));
+	//this->addController(new JoystickController(this, 0));
 }
 
 Player::~Player() {

@@ -26,7 +26,7 @@ public:
 	void setController(Controller *c);
 	void addController(Controller *c);
 
-	Player(glm::vec2 pos, sf::Window *window);
+	Player(glm::vec2 pos, sf::RenderWindow *window);
 	~Player();
 	
 	/* entity update & render */
