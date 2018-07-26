@@ -32,6 +32,10 @@ Entity::Entity() {
  * public methods *
 \******************/
 
+Entity::~Entity() {
+
+}
+
 float Entity::distanceTo(Entity &other) {
 	return glm::distance(this->getPos(), other.getPos());
 }
@@ -77,7 +81,7 @@ float Entity::getViewAngle(glm::vec2 base_dir) {
 * @param target_pos Position (in Worldspace).
 */
 void Entity::setViewTarget(glm::vec2 target_pos) {
-	glm::vec2 dir = pos - this->pos;
+	glm::vec2 dir = target_pos - this->pos;
 	this->view_dir = glm::normalize(dir);
 }
 

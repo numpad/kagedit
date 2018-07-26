@@ -19,7 +19,7 @@ private:
 	void animate(float dt_seconds);
 
 protected:
-	float collectableRadius = bgshape_radius + animation_radius_max;
+	float collectableRadius = 45.0f;
 
 	Item();
 

@@ -7,10 +7,21 @@
 #include <imgui_impl.h>
 #include <sqlite3/sqlite3.h>
 
+extern "C" {
+	#include <lua.h>
+	#include <lualib.h>
+	#include <lauxlib.h>
+}
+
+#include <sol.hpp>
+
 #include "Entity.hpp"
 #include "Player.hpp"
 #include "Item.hpp"
 #include "ItemGun.hpp"
+#include "KeyboardController.hpp"
+#include "MouseController.hpp"
+#include "JoystickController.hpp"
 
 #if !defined(_WIN32)
 #define sprintf_s sprintf
@@ -39,23 +50,25 @@ glm::vec2 get_axis(unsigned int joystick, sf::Joystick::Axis axis1, sf::Joystick
 		sf::Joystick::getAxisPosition(joystick, axis2) * 0.01f
 	);
 }
+#if defined(_WIN32)
+#include <Windows.h>
+#endif
 
 #if defined(_WIN32) && !defined(_DEBUG)
-#include <Windows.h>
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 #else
 int main(int argc, char *argv[]) {
 #endif
-	sf::RenderWindow window(sf::VideoMode(800, 600), "pflesh " __VERSION__);
+
+	sol::state lua;
+	lua.open_libraries(sol::lib::base);
+	lua.script("io.read()");
+	
+	sf::RenderWindow window(sf::VideoMode(800, 600), "p.flesh " __VERSION__);
 	bool vsync_enabled = true;
 	window.setVerticalSyncEnabled(vsync_enabled);
-	sf::View default_view(sf::FloatRect(0.0f, 0.0f, window.getSize().x, window.getSize().y));
-<<<<<<< HEAD
+	sf::View default_view(sf::FloatRect(0.0f, 0.0f, (float)window.getSize().x, (float)window.getSize().y));
 	
-	
-=======
-
->>>>>>> b859008699c5237dcb5e7316fcdc83c7a05f3776
 	/* init imgui */
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -65,8 +78,8 @@ int main(int argc, char *argv[]) {
 	
 	std::vector<Entity *> entities;
 	std::vector<Item *> items;
-	Player *player = new Player(glm::vec2(350.0f));
-
+	Player *player = new Player(glm::vec2(350.0f), &window);
+	
 	entities.push_back(player);
 
 	sf::Time dt;
@@ -75,9 +88,6 @@ int main(int argc, char *argv[]) {
 	float dt_sum = 0.0f;
 	while (window.isOpen()) {
 		sf::Time dt = dt_clock.restart();
-		default_view.setSize(window.getSize().x, window.getSize().y);
-		window.setView(default_view);
-
 		default_view.setSize(window.getSize().x, window.getSize().y);
 		window.setView(default_view);
 		
@@ -96,6 +106,22 @@ int main(int argc, char *argv[]) {
 				if (ImGui::Button("Spawn")) {
 					items.push_back(new ItemGun(glm::vec2(_ipos[0], _ipos[1])));
 				}
+				ImGui::Separator();
+
+				static bool controller_keyboard = false;
+				ImGui::Text("Controls:");
+				if (ImGui::RadioButton("Keyboard", controller_keyboard) && !controller_keyboard) {
+					player->setController(new KeyboardController(player));
+					player->addController(new MouseController(player, &window));
+					controller_keyboard = !controller_keyboard;
+				}
+				
+				if (ImGui::RadioButton("Joystick", !controller_keyboard) && controller_keyboard) {
+					player->setController(new JoystickController(player, 0));
+					controller_keyboard = !controller_keyboard;
+				}
+				
+
 			ImGui::End();
 		}
 

@@ -13,18 +13,22 @@
 #include "Entity.hpp"
 #include "Controller.hpp"
 #include "KeyboardController.hpp"
+#include "MouseController.hpp"
+#include "JoystickController.hpp"
 
 class Player : public Entity {
 	sf::Texture skin_stand, skin_gun;
 	
-	//int joystick_id = 0;
-	
-	Controller *controller;
+	std::vector<Controller *> controllers;
 
 public:
-	 
-	Player(glm::vec2 pos);
+	
+	void setController(Controller *c);
+	void addController(Controller *c);
 
+	Player(glm::vec2 pos, sf::Window *window);
+	~Player();
+	
 	/* entity update & render */
 	void update(float dt);
 };

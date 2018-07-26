@@ -29,15 +29,15 @@ bool Item::isCollectableBy(Entity &e) {
 
 void Item::onEntityNear(Entity &entity) {
 	glm::vec2 to_entity = entity.getPos() - this->getPos();
-	constexpr float move_speed = 2.85f;
+	float move_vel = glm::length(to_entity) / 10.0f;
 
-	if (glm::length(to_entity) <= move_speed) {
+	if (glm::length(to_entity) <= move_vel) {
 		to_entity = glm::vec2(0.0f);
 	} else {
 		to_entity = glm::normalize(to_entity);
 	}
 
-	this->setVel(to_entity * move_speed);
+	this->setVel(to_entity * move_vel);
 }
 
 void Item::update(float dt_seconds) {

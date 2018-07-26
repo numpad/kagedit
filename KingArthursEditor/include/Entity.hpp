@@ -23,6 +23,8 @@ protected:
 	Entity();
 
 public:
+	virtual ~Entity();
+
 	/* util */
 	float distanceTo(Entity &other);
 

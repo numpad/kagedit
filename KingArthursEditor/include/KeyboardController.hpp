@@ -17,7 +17,7 @@ protected:
 	float isKeyDown(std::string key);
 public:
 	KeyboardController(Entity *e);
-
+	
 	/* configure */
 	void mapKey(const std::string name, const sf::Keyboard::Key key);
 	
