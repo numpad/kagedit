@@ -1,4 +1,4 @@
-#include "..\include\MouseController.hpp"
+#include "MouseController.hpp"
 
 MouseController::MouseController(Entity *entity, sf::Window *window) {
 	this->entity = entity;

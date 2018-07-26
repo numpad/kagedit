@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
 #endif
 
 	sol::state lua;
-	lua.open_libraries(sol::lib::base);
+	lua.open_libraries(sol::lib::base, sol::lib::io);
 	lua.script("io.read()");
 	
 	sf::RenderWindow window(sf::VideoMode(800, 600), "p.flesh " __VERSION__);
