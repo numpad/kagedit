@@ -1,6 +1,13 @@
 #define __VERSION__ "0.0.1"
+#define SOL_CHECK_ARGUMENTS 1
+#define SOL_NO_EXCEPTIONS 1
+
 #include <iostream>
 #include <string>
+#include <vector>
+#include <tuple>
+#include <string.h>
+#include <stdio.h>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
@@ -16,6 +23,7 @@ extern "C" {
 }
 
 #include <sol.hpp>
+#include <tinydir.h>
 
 #include "Entity.hpp"
 #include "Player.hpp"
@@ -24,6 +32,8 @@ extern "C" {
 #include "KeyboardController.hpp"
 #include "MouseController.hpp"
 #include "JoystickController.hpp"
+
+#include "LuaInputWrapper.hpp"
 
 #if !defined(_WIN32)
 #define sprintf_s sprintf
@@ -53,22 +63,134 @@ glm::vec2 get_axis(unsigned int joystick, sf::Joystick::Axis axis1, sf::Joystick
 	);
 }
 
-struct ball {
-	int x, y;
-	
-	ball(int x = 0, int y = 0) {
-		this->x = x;
-		this->y = y;
+std::vector<std::string> list_files(std::string path = ".") {
+	tinydir_dir dir;
+	tinydir_open(&dir, path.c_str());
+
+	std::vector<std::string> res;
+
+	while (dir.has_next) {
+		tinydir_file f;
+		tinydir_readfile(&dir, &f);
+
+		if (!f.is_dir)
+			res.push_back(std::string(f.name));
+		
+		tinydir_next(&dir);
 	}
-	
-	void fall() {
-		this->y += 1;
+	tinydir_close(&dir);
+
+	return res;
+}
+
+static int luaapi_listfiles(lua_State *L) {
+	/* retrieve parameter */
+	std::string path = "assets/";
+	if (lua_gettop(L) > 0) {
+		char full[512];
+		const char *asset_path = lua_tostring(L, 1);
+		sprintf(full, "%s%s", path.c_str(), asset_path);
+		path = std::string(full);
 	}
 
-	void print() {
-		std::cout << x << ", " << y << std::endl;
+	/* read filenames */
+	std::vector<std::string> files = list_files(path);
+
+	/* return table */
+	lua_newtable(L);
+	int i = 1;
+	for (std::string &fn : files) {
+		lua_pushstring(L, fn.c_str());
+		lua_seti(L, -2, i++);
+	}
+
+	return 1;
+}
+
+void register_luaapi(sol::state &lua) {
+	lua_State *L = lua.lua_state();
+
+	/* register listfiles */
+	lua_pushcfunction(L, luaapi_listfiles);
+	lua_setglobal(L, "list_files");
+}
+
+class Script {
+public:
+	int name_len = 64;
+	static int NEXT_ID;
+	int id;
+
+	char *name;
+	sol::state *lua;
+	char *src;
+	size_t len;
+	bool shown;
+
+	Script(sol::state *lua, size_t len = 2048) {
+		this->src = new char[len]();
+		this->len = len;
+		this->shown = true;
+		this->id = Script::NEXT_ID++;
+		this->lua = lua;
+
+		this->name = new char[Script::name_len]();
+		sprintf(this->name, "Script #%d", this->id);
+	}
+
+	Script(sol::state *lua, char *content, const char *name, bool hidden = false) {
+		this->len = strlen(content) * 2;
+		this->src = new char[this->len + 1]();
+
+		strncpy(this->src, content, this->len);
+
+		this->shown = !hidden;
+		this->id = Script::NEXT_ID++;
+		this->lua = lua;
+
+		this->name_len = strlen(name) + 1;
+		this->name = new char[this->name_len]();
+		strncpy(this->name, name, strlen(name));
+	}
+
+	~Script() {
+		delete[] this->src;
+	}
+
+	void hide() {
+		this->shown = false;
+	}
+
+	void execute() {
+		this->lua->safe_script(this->src);
+	}
+
+	void render() {
+		if (!this->shown) return;
+
+		char title[128];
+		sprintf(title, "%s###1%d", this->name, this->id);
+
+		ImGui::Begin(title, &this->shown);
+			ImGui::InputTextMultiline("", this->src, this->len);
+			if (ImGui::Button("Run")) {
+				this->execute();
+			}
+			ImGui::InputText("Name", this->name, Script::name_len);
+		ImGui::End();
 	}
 };
+int Script::NEXT_ID = 0;
+
+sol::state new_luastate(sf::Window *window) {
+	sol::state lua;
+	lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string, sol::lib::os, sol::lib::math, sol::lib::table);
+	register_luaapi(lua);
+	LuaInputWrapper::REGISTER(&lua, window);
+	lua.script_file("assets/scripts/loader.lua");
+
+	return lua;
+}
 
 #if defined(_WIN32)
 #include <Windows.h>
@@ -79,30 +201,14 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 #else
 int main(int argc, char *argv[]) {
 #endif
-
-	sol::state lua;
-	lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string, sol::lib::os, sol::lib::math, sol::lib::table);
-	lua.new_usertype<ball>("ball",
-		sol::constructors<ball(), ball(int, int)>(),
-		"x", &ball::x,
-		"y", &ball::y,
-		"fall", &ball::fall,
-		"print", &ball::print
-	);
-
-	for (int i = 0; i < 10; ++i) {
-		using namespace std;
-		cout << "#" << i + 1 << "> ";
-		string l;
-		getline(std::cin, l);
-		lua.script(l);
-	}
-
 	sf::RenderWindow window(sf::VideoMode(800, 600), "p.flesh " __VERSION__);
 	bool vsync_enabled = true;
 	window.setVerticalSyncEnabled(vsync_enabled);
 	sf::View default_view(sf::FloatRect(0.0f, 0.0f, (float)window.getSize().x, (float)window.getSize().y));
 	
+	/* open lua state, load init script */
+	sol::state lua = new_luastate(&window);
+
 	/* init imgui */
 	ImGui::CreateContext();
 	ImGuiIO &io = ImGui::GetIO(); (void)io;
@@ -113,8 +219,28 @@ int main(int argc, char *argv[]) {
 	std::vector<Entity *> entities;
 	std::vector<Item *> items;
 	Player *player = new Player(glm::vec2(350.0f), &window);
-	
 	entities.push_back(player);
+
+	std::vector<Script *> script_srcs;
+	/* load debug scripts */
+	for (std::string &fn : list_files("assets/scripts/debug/")) {
+		char path[512];
+		sprintf(path, "assets/scripts/debug/%s", fn.c_str());
+
+		FILE *fp = fopen(path, "r");
+		if (!fp) continue;
+
+		fseek(fp, 0, SEEK_END);
+		size_t len = ftell(fp);
+		fseek(fp, 0, SEEK_SET);
+
+		char *src = new char[len + 1]();
+		fread(src, sizeof(char), len, fp);
+
+		fclose(fp);
+
+		script_srcs.push_back(new Script(&lua, src, fn.c_str(), true));
+	}
 
 	sf::Time dt;
 	sf::Clock dt_clock;
@@ -156,8 +282,11 @@ int main(int argc, char *argv[]) {
 					controller_keyboard = !controller_keyboard;
 				}
 				
-
 			ImGui::End();
+
+			for (Script *s : script_srcs) {
+				s->render();
+			}
 		}
 
 		if (render_imgui && ImGui::BeginMainMenuBar()) {
@@ -183,9 +312,45 @@ int main(int argc, char *argv[]) {
 				ImGui::MenuItem("Close", NULL, &close);
 				ImGui::EndMenu();
 			}
+			if (ImGui::BeginMenu("Script")) {
+				if (ImGui::MenuItem("New")) {
+					script_srcs.push_back(new Script(&lua));
+				}
+				if (ImGui::MenuItem("Reset State")) {
+					lua = new_luastate(&window);
+				}
+				ImGui::Separator();
+				/* show menu item to open hidden scripts */
+				if (ImGui::BeginMenu("Show hidden")) {
+					for (Script *s : script_srcs) {
+						if (!s->shown) {
+							if (ImGui::MenuItem(s->name)) {
+								s->shown = true;
+							}
+						}
+					}
+					ImGui::EndMenu();
+				}
+				/* show menu item to run scripts */
+				if (ImGui::BeginMenu("Run")) {
+					for (Script *s : script_srcs) {
+						if (ImGui::MenuItem(s->name)) {
+							s->execute();
+						}
+					}
+					ImGui::EndMenu();
+				}
+
+				ImGui::EndMenu();
+			}
 			ImGui::EndMainMenuBar();
 		}
 		
+		/* update script hooks */
+		sol::function luafunc_onmousedown = lua["on_mousedown"];
+		if (luafunc_onmousedown.get_type() == sol::type::function)
+			luafunc_onmousedown(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
+
 		/* update */
 		glm::vec2 stick_right = get_axis(0, sf::Joystick::Axis::Z, sf::Joystick::Axis::R);
 
@@ -227,8 +392,9 @@ int main(int argc, char *argv[]) {
 
 	for (Entity *e : entities) delete e;
 	for (Item *i : items) delete i;
+	for (Script *s : script_srcs) delete s;
 
 	ImGui::SFML::Shutdown();
-
+	
 	return 0;
 }
