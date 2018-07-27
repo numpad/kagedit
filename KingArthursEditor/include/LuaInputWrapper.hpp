@@ -12,9 +12,10 @@ class LuaInputWrapper {
 
 public:
 	static sol::state *lua;
-	static sf::Window *window;
+	static sf::RenderWindow *window;
+	static sf::View *camera;
 
-	static void REGISTER(sol::state *lua, sf::Window *window);
+	static void REGISTER(sol::state *lua, sf::RenderWindow *window, sf::View *camera);
 
 	glm::vec2 getMousePosition();
 

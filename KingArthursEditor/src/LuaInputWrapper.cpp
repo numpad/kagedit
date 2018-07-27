@@ -2,11 +2,14 @@
 
 /* static */
 sol::state *LuaInputWrapper::lua = NULL;
-sf::Window *LuaInputWrapper::window = NULL;
+sf::RenderWindow *LuaInputWrapper::window = NULL;
+sf::View *LuaInputWrapper::camera = NULL;
 
-void LuaInputWrapper::REGISTER(sol::state *lua, sf::Window *window) {
+
+void LuaInputWrapper::REGISTER(sol::state *lua, sf::RenderWindow *window, sf::View *camera) {
 	LuaInputWrapper::lua = lua;
 	LuaInputWrapper::window = window;
+	LuaInputWrapper::camera = camera;
 
 	/* register glm::vec2 */
 	auto glm_vec2_add_overload = sol::overload(
@@ -64,6 +67,23 @@ void LuaInputWrapper::REGISTER(sol::state *lua, sf::Window *window) {
 			return false;
 		}
 	);
+	
+	LuaInputWrapper::lua->new_usertype<sf::View>(
+		"camera2d",
+		sol::constructors<sf::View()>(),
+		"getPosition", [](const sf::View &camera){ const sf::Vector2f pos = camera.getCenter(); return glm::vec2(pos.x, pos.y); },
+		"getSize", [](const sf::View &camera){ const sf::Vector2f s = camera.getSize(); return glm::vec2(s.x, s.y); },
+		"getRotation", [](const sf::View &camera){ return camera.getRotation(); },
+		"setPosition", [](sf::View &camera, const glm::vec2 &p){ camera.setCenter(p.x, p.y); },
+		"setSize", [](sf::View &camera, const glm::vec2 &s){ camera.setSize(s.x, s.y); },
+		"setRotation", [](sf::View &camera, float rad){ camera.setRotation(glm::degrees(rad)); },
+		"move", [](sf::View &camera, const glm::vec2 &d){ camera.move(d.x, d.y); },
+		"rotate", [](sf::View &camera, float rad){ camera.rotate(glm::degrees(rad)); },
+		"zoom", [](sf::View &camera, float f){ camera.zoom(f); }
+	);
+	LuaInputWrapper::lua->set("camera", *camera);
+
+
 }
 
 glm::vec2 LuaInputWrapper::getMousePosition() {
