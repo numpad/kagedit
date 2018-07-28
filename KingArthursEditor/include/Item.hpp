@@ -1,9 +1,11 @@
 #ifndef ITEM_HPP
 #define ITEM_HPP
 
+#include <string>
 #include <math.h>
 #include <glm/glm.hpp>
 #include <SFML/Graphics.hpp>
+#include <sol.hpp>
 
 #include "Entity.hpp"
 
@@ -19,20 +21,25 @@ private:
 	void animate(float dt_seconds);
 
 protected:
-	float collectableRadius = 45.0f;
+	float collectableMagneticRadius = 45.0f;
+	float collectInRadius = 5.0f;
+	bool collected = false;
+
+	std::string script_src;
 
 	Item();
-
 
 public:
 
 	/* member access */
 	float getCollectableRadius();
 	bool isCollectableBy(Entity &e);
+	bool isCollected();
+	void setCollected(bool collected = true);
 
 	/* called on specific events */
-	virtual void onEntityNear(Entity &entity);
-	virtual void onPickup(Entity &by) =0;
+	void onEntityNear(Entity &entity, sol::state &lua);
+	void onPickup(Entity &entity, sol::state &lua);
 
 	/* update/render */
 	void update(float dt_seconds);

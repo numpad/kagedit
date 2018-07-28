@@ -6,6 +6,25 @@ sf::RenderWindow *LuaInputWrapper::window = NULL;
 sf::View *LuaInputWrapper::camera = NULL;
 
 
+void LuaInputWrapper::REGISTER_PLAYER(sol::state *lua) {
+	lua->new_usertype<Player>(
+		"Player",
+		/* entity base class */
+		sol::base_classes, sol::bases<Entity>(),
+		"new", sol::no_constructor,
+		"distanceTo", &Entity::distanceTo,
+		"getPos", &Entity::getPos,
+		"setPos", &Entity::setPos,
+		"getVel", &Entity::getVel,
+		"setVel", &Entity::setVel,
+		"getViewDirection", &Entity::getViewDirection,
+		"getViewAngle", &Entity::getViewAngle,
+		"setViewTarget", &Entity::setViewTarget,
+		"setViewDirection", &Entity::setViewDirection,
+		"update", &Entity::update
+	);
+}
+
 void LuaInputWrapper::REGISTER(sol::state *lua, sf::RenderWindow *window, sf::View *camera) {
 	LuaInputWrapper::lua = lua;
 	LuaInputWrapper::window = window;
@@ -83,7 +102,7 @@ void LuaInputWrapper::REGISTER(sol::state *lua, sf::RenderWindow *window, sf::Vi
 	);
 	LuaInputWrapper::lua->set("camera", *camera);
 
-
+	LuaInputWrapper::REGISTER_PLAYER(lua);
 }
 
 glm::vec2 LuaInputWrapper::getMousePosition() {

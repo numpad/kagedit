@@ -8,7 +8,12 @@
 #include <string>
 #include <sstream>
 
+#include "Entity.hpp"
+#include "Player.hpp"
+
 class LuaInputWrapper {
+
+	static void REGISTER_PLAYER(sol::state *lua);
 
 public:
 	static sol::state *lua;

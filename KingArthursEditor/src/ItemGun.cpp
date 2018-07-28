@@ -6,7 +6,3 @@ ItemGun::ItemGun(glm::vec2 pos) {
 	this->setPos(pos);
 	this->setTexture(this->gun_texture);
 }
-
-void ItemGun::onPickup(Entity & by) {
-	
-}

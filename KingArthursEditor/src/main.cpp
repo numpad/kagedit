@@ -233,11 +233,12 @@ public:
 
 		ImGui::Begin(title, &this->shown);
 			ImGui::InputText("##Name", this->name, Script::name_len);
-			float height = 82.0f;
-			ImGui::InputTextMultiline("", this->src, this->len, ImVec2(ImGui::GetWindowWidth() - 18.0f, ImGui::GetWindowHeight() - height));
+			ImGui::SameLine();
 			if (ImGui::Button("Run")) {
 				this->execute();
 			}
+			float height = 62.0f;
+			ImGui::InputTextMultiline("", this->src, this->len, ImVec2(ImGui::GetWindowWidth() - 18.0f, ImGui::GetWindowHeight() - height));
 		ImGui::End();
 	}
 };
@@ -410,11 +411,12 @@ int main(int argc, char *argv[]) {
 		/* update */
 		glm::vec2 stick_right = get_axis(0, sf::Joystick::Axis::Z, sf::Joystick::Axis::R);
 
-		for (Entity *entity : entities) {
+		for (auto it = entities.begin(); it != entities.end(); ++it) {
+			Entity *entity = *it;
 			entity->update(dt.asSeconds());
 			for (Item *item : items) {
 				if (item->isCollectableBy(*entity)) {
-					item->onEntityNear(*entity);
+					item->onEntityNear(*entity, lua);
 				}
 			}
 		}

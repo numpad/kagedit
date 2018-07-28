@@ -20,24 +20,41 @@ Item::Item() {
 }
 
 float Item::getCollectableRadius() {
-	return this->collectableRadius;
+	return this->collectableMagneticRadius;
 }
 
 bool Item::isCollectableBy(Entity &e) {
 	return (this->distanceTo(e) <= this->getCollectableRadius());
 }
 
-void Item::onEntityNear(Entity &entity) {
-	glm::vec2 to_entity = entity.getPos() - this->getPos();
-	float move_vel = glm::length(to_entity) / 10.0f;
+bool Item::isCollected() {
+	return this->collected;
+}
 
-	if (glm::length(to_entity) <= move_vel) {
-		to_entity = glm::vec2(0.0f);
+void Item::setCollected(bool collected) {
+	this->collected = collected;
+}
+
+void Item::onEntityNear(Entity &entity, sol::state &lua) {
+	glm::vec2 to_entity = entity.getPos() - this->getPos();
+	float dist = glm::length(to_entity);
+	float move_vel = dist / 10.0f;
+
+	if (glm::length(to_entity) < move_vel) {
+		move_vel = 1.0f;
+		this->setCollected();
+		entity.onCollect(*this);
+		this->onPickup(entity, lua);
 	} else {
 		to_entity = glm::normalize(to_entity);
 	}
 
 	this->setVel(to_entity * move_vel);
+}
+
+void Item::onPickup(Entity &entity, sol::state &lua) {
+	// execute on pickup script
+	lua.safe_script(this->script_src);
 }
 
 void Item::update(float dt_seconds) {

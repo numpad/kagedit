@@ -15,8 +15,6 @@ public:
 	
 	ItemGun(glm::vec2 pos);
 
-	void onPickup(Entity &by);
-
 };
 
 #endif
