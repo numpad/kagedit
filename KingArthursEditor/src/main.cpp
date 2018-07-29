@@ -410,12 +410,22 @@ int main(int argc, char *argv[]) {
 		
 		/* update */
 		glm::vec2 stick_right = get_axis(0, sf::Joystick::Axis::Z, sf::Joystick::Axis::R);
+		
+		
+		for (size_t i = 0; i < items.size(); ++i) {
+			Item *item = items.at(i);
+			if (item->isCollected()) {
+				items.erase(items.begin() + i);
+				continue;
+			}
+		}
 
 		for (auto it = entities.begin(); it != entities.end(); ++it) {
 			Entity *entity = *it;
 			entity->update(dt.asSeconds());
-			for (Item *item : items) {
-				if (item->isCollectableBy(*entity)) {
+			for (auto item_it = items.begin(); item_it != items.end(); ++item_it) {
+				Item *item = *item_it;
+				if (!item->isCollected() && item->isCollectableBy(*entity)) {
 					item->onEntityNear(*entity, lua);
 				}
 			}
@@ -435,7 +445,7 @@ int main(int argc, char *argv[]) {
 			entity->draw(window);
 		}
 		
-
+		
 		if (render_imgui) {
 			ImGui::EndFrame();
 			ImGui::SFML::Render(window);

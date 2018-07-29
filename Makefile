@@ -1,6 +1,6 @@
 CC=g++
 CFLAGS=-std=c++14 -Wall -pedantic -ggdb
-INCLUDES=-I KingArthursEditor/include/ -I KingArthursEditor/lib/imgui/ -I KingArthursEditor/lib/linux/SFML-2.5.0/include/ -I KingArthursEditor/lib/linux/sqlite3/include/ -I KingArthursEditor/lib/sol/include/
+INCLUDES=-I KingArthursEditor/include/ -I KingArthursEditor/lib/imgui/ -I KingArthursEditor/lib/linux/SFML-2.5.0/include/ -I KingArthursEditor/lib/linux/sqlite3/include/ -I KingArthursEditor/lib/sol/include/ -I KingArthursEditor/lib/tinydir/include/
 LFLAGS=
 LIBS=-lGL -lsfml-window -lsfml-graphics -lsfml-system -llua
 SRC=KingArthursEditor/src

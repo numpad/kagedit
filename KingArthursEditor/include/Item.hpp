@@ -11,6 +11,7 @@
 
 class Item : public Entity {
 private:
+	sf::Sprite sprite;
 	float bgshape_radius = 17.0f,
 		  bgshape_radius_extra = 0.0f;
 	sf::CircleShape bgshape;
@@ -25,7 +26,7 @@ protected:
 	float collectInRadius = 5.0f;
 	bool collected = false;
 
-	std::string script_src;
+	std::string script_src = "print('hey')";
 
 	Item();
 

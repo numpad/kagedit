@@ -40,10 +40,10 @@ void Item::onEntityNear(Entity &entity, sol::state &lua) {
 	float dist = glm::length(to_entity);
 	float move_vel = dist / 10.0f;
 
-	if (glm::length(to_entity) < move_vel) {
+	if (dist < 2.0f) {
 		move_vel = 1.0f;
 		this->setCollected();
-		entity.onCollect(*this);
+		//entity.onCollect(*this);
 		this->onPickup(entity, lua);
 	} else {
 		to_entity = glm::normalize(to_entity);
@@ -54,7 +54,7 @@ void Item::onEntityNear(Entity &entity, sol::state &lua) {
 
 void Item::onPickup(Entity &entity, sol::state &lua) {
 	// execute on pickup script
-	lua.safe_script(this->script_src);
+	lua.script(this->script_src);
 }
 
 void Item::update(float dt_seconds) {

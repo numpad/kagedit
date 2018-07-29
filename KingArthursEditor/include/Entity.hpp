@@ -6,8 +6,6 @@
 #include <glm/gtx/vector_angle.hpp>
 #include <SFML/Graphics.hpp>
 
-#include "Item.hpp"
-
 class Entity {
 private:
 	glm::vec2 view_dir = glm::vec2(1.0f, 0.0f);
@@ -46,7 +44,7 @@ public:
 
 
 	/* items */
-	virtual void onCollect(Item &item);
+	//virtual void onCollect(Item &item);
 	
 	/* update/render */
 	virtual void update(float dt);

@@ -99,8 +99,7 @@ void Entity::setViewDirection(glm::vec2 target_dir) {
 	this->view_dir = glm::normalize(target_dir);
 }
 
-void Entity::onCollect(Item &item) {
-}
+//void Entity::onCollect(Item &item) {}
 
 /**
  * @brief Update the entity
