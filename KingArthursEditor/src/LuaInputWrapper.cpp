@@ -7,6 +7,24 @@ sf::View *LuaInputWrapper::camera = NULL;
 
 
 void LuaInputWrapper::REGISTER_PLAYER(sol::state *lua) {
+	lua->new_usertype<Entity>(
+		"Entity",
+		/* entity base class */
+		"new", sol::no_constructor,
+		"distanceTo", &Entity::distanceTo,
+		"getPos", &Entity::getPos,
+		"setPos", &Entity::setPos,
+		"getVel", &Entity::getVel,
+		"setVel", &Entity::setVel,
+		"getAcc", &Entity::getAcc,
+		"setAcc", &Entity::setAcc,
+		"getViewDirection", &Entity::getViewDirection,
+		"getViewAngle", &Entity::getViewAngle,
+		"setViewTarget", &Entity::setViewTarget,
+		"setViewDirection", &Entity::setViewDirection,
+		"update", &Entity::update
+	);
+
 	lua->new_usertype<Player>(
 		"Player",
 		/* entity base class */
@@ -17,11 +35,35 @@ void LuaInputWrapper::REGISTER_PLAYER(sol::state *lua) {
 		"setPos", &Entity::setPos,
 		"getVel", &Entity::getVel,
 		"setVel", &Entity::setVel,
+		"getAcc", &Entity::getAcc,
+		"setAcc", &Entity::setAcc,
 		"getViewDirection", &Entity::getViewDirection,
 		"getViewAngle", &Entity::getViewAngle,
 		"setViewTarget", &Entity::setViewTarget,
 		"setViewDirection", &Entity::setViewDirection,
 		"update", &Entity::update
+	);
+}
+
+void LuaInputWrapper::REGISTER_ITEMS(sol::state *lua) {
+	lua->new_usertype<Item>(
+		"Item",
+		/* entity base class */
+		sol::base_classes, sol::bases<Entity>(),
+		"new", sol::no_constructor,
+		"distanceTo", &Entity::distanceTo,
+		"getPos", &Entity::getPos,
+		"setPos", &Entity::setPos,
+		"getVel", &Entity::getVel,
+		"setVel", &Entity::setVel,
+		"getAcc", &Entity::getAcc,
+		"setAcc", &Entity::setAcc,
+		"getViewDirection", &Entity::getViewDirection,
+		"getViewAngle", &Entity::getViewAngle,
+		"setViewTarget", &Entity::setViewTarget,
+		"setViewDirection", &Entity::setViewDirection,
+		"update", &Entity::update
+
 	);
 }
 

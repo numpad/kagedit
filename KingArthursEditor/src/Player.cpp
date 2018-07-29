@@ -40,5 +40,7 @@ void Player::update(float dt) {
 		controllers.at(i)->readInput();
 		controllers.at(i)->update(dt);
 	}
+
+	this->updatePhysics(dt);
 }
 

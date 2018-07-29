@@ -11,8 +11,11 @@ private:
 	glm::vec2 view_dir = glm::vec2(1.0f, 0.0f);
 
 protected:
+	/* properties */
+	
 	glm::vec2 pos = glm::vec2(0.0f),
-	          vel = glm::vec2(0.0f);
+	          vel = glm::vec2(0.0f),
+	          acc = glm::vec2(0.0f);
 
 	sf::Sprite sprite;
 
@@ -35,6 +38,10 @@ public:
 	/* velocity */
 	glm::vec2 getVel();
 	void setVel(glm::vec2 vel);
+
+	/* acceleration */
+	glm::vec2 getAcc();
+	void setAcc(glm::vec2 acc);
 
 	/* view direction */
 	glm::vec2 getViewDirection();

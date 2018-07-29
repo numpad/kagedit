@@ -2,6 +2,8 @@
 #define SOL_CHECK_ARGUMENTS 1
 #define SOL_NO_EXCEPTIONS 1
 
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -199,7 +201,7 @@ public:
 	}
 
 	Script(sol::state *lua, char *content, const char *name, bool hidden = false) {
-		this->len = strlen(content) * 2;
+		this->len = MAX(strlen(content) * 2, 2048);
 		this->src = new char[this->len + 1]();
 
 		strncpy(this->src, content, this->len);
@@ -258,6 +260,10 @@ sol::state new_luastate(sf::RenderWindow *window, sf::View *camera) {
 #include <Windows.h>
 #endif
 
+Entity &luaapi_deref(Entity *t) {
+	return *t;
+}
+
 #if defined(_WIN32) && !defined(_DEBUG)
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 #else
@@ -285,6 +291,7 @@ int main(int argc, char *argv[]) {
 	sol::state lua = new_luastate(&window, &default_view);
 	lua["__pointers__"]["entities"] = &entities;
 	lua["__pointers__"]["items"] = &items;
+
 
 	std::vector<Script *> script_srcs;
 	/* load debug scripts */

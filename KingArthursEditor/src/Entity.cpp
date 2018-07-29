@@ -19,6 +19,7 @@ void Entity::setTexture(const sf::Texture &texture, glm::vec2 origin) {
 
 void Entity::updatePhysics(float dt_seconds) {
 	/* calculate new position TODO: */
+	this->vel += this->acc;
 	this->pos += this->vel * (dt_seconds * 60.0f);
 	this->vel *= 0.935f;
 }
@@ -54,6 +55,14 @@ glm::vec2 Entity::getVel() {
 
 void Entity::setVel(glm::vec2 vel) {
 	this->vel = vel;
+}
+
+glm::vec2 Entity::getAcc() {
+	return this->acc;
+}
+
+void Entity::setAcc(glm::vec2 acc) {
+	this->acc = acc;
 }
 
 glm::vec2 Entity::getViewDirection() {
@@ -108,7 +117,7 @@ void Entity::setViewDirection(glm::vec2 target_dir) {
  * @param dt Delta Time for variable timestep, in Seconds.
  */
 void Entity::update(float dt) {
-
+	this->updatePhysics(dt);
 }
 
 void Entity::draw(sf::RenderTarget &target) {

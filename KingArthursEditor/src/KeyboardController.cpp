@@ -35,8 +35,6 @@ void KeyboardController::readInput() {
 }
 
 void KeyboardController::update(float dt_seconds) {
-	entity->setVel(this->axis * 3.75f);
-	entity->setPos(entity->getPos() + entity->getVel() * (dt_seconds * 60.0f));
-	entity->setVel(entity->getVel() * 0.9375f);
+	entity->setAcc(this->axis * 0.75f);
 }
 

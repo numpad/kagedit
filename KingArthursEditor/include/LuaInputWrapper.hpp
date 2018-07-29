@@ -12,10 +12,12 @@
 
 #include "Entity.hpp"
 #include "Player.hpp"
+#include "Item.hpp"
 
 class LuaInputWrapper {
 
 	static void REGISTER_PLAYER(sol::state *lua);
+	static void REGISTER_ITEMS(sol::state *lua);
 
 public:
 	static sol::state *lua;

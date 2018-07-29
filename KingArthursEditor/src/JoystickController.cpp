@@ -47,6 +47,4 @@ void JoystickController::readInput() {
 
 void JoystickController::update(float dt) {
 	entity->setVel(this->axis * 3.75f);
-	entity->setPos(entity->getPos() + entity->getVel() * (dt * 60.0f));
-	entity->setVel(entity->getVel() * 0.9375f);
 }
