@@ -72,9 +72,10 @@ void LuaInputWrapper::REGISTER(sol::state *lua, sf::RenderWindow *window, sf::Vi
 		"length",							[](const glm::vec2 &v){ return glm::length(v); },
 		"dot",								[](const glm::vec2 &a, const glm::vec2 &b){ return glm::dot(a, b); }
 	);
+	
+	LuaInputWrapper::lua->create_named_table("__pointers__");
 
 	LuaInputWrapper::lua->create_named_table("input",
-		"__window", LuaInputWrapper::window,
 		"getMousePosition", [window](){ sf::Vector2i mp = sf::Mouse::getPosition(*window); return glm::vec2((float)mp.x, (float)mp.y); },
 		"getMouseButton", [](const char *key){
 			if (key == nullptr) return sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);

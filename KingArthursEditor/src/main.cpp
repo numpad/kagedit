@@ -269,9 +269,6 @@ int main(int argc, char *argv[]) {
 	sf::View default_view(sf::FloatRect(0.0f, 0.0f, (float)window.getSize().x, (float)window.getSize().y));
 	window.setView(default_view);
 
-	/* open lua state, load init script */
-	sol::state lua = new_luastate(&window, &default_view);
-
 	/* init imgui */
 	ImGui::CreateContext();
 	ImGuiIO &io = ImGui::GetIO(); (void)io;
@@ -283,6 +280,11 @@ int main(int argc, char *argv[]) {
 	std::vector<Item *> items;
 	Player *player = new Player(glm::vec2(350.0f), &window);
 	entities.push_back(player);
+
+	/* open lua state, load init script */
+	sol::state lua = new_luastate(&window, &default_view);
+	lua["__pointers__"]["entities"] = &entities;
+	lua["__pointers__"]["items"] = &items;
 
 	std::vector<Script *> script_srcs;
 	/* load debug scripts */
