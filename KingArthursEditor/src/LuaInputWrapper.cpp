@@ -10,6 +10,9 @@ void LuaInputWrapper::REGISTER_PLAYER(sol::state *lua) {
 	lua->new_usertype<Entity>(
 		"Entity",
 		/* entity base class */
+		"pos", sol::property(&Entity::setPos, &Entity::getPos),
+		"vel", sol::property(&Entity::setVel, &Entity::getVel),
+		"acc", sol::property(&Entity::setAcc, &Entity::getAcc),
 		"new", sol::no_constructor,
 		"distanceTo", &Entity::distanceTo,
 		"getPos", &Entity::getPos,
@@ -29,8 +32,11 @@ void LuaInputWrapper::REGISTER_PLAYER(sol::state *lua) {
 
 	lua->new_usertype<Player>(
 		"Player",
-		/* entity base class */
 		sol::base_classes, sol::bases<Entity>(),
+		/* entity base class */
+		"pos", sol::property(&Entity::setPos, &Entity::getPos),
+		"vel", sol::property(&Entity::setVel, &Entity::getVel),
+		"acc", sol::property(&Entity::setAcc, &Entity::getAcc),
 		"new", sol::no_constructor,
 		"distanceTo", &Entity::distanceTo,
 		"getPos", &Entity::getPos,
@@ -52,8 +58,11 @@ void LuaInputWrapper::REGISTER_PLAYER(sol::state *lua) {
 void LuaInputWrapper::REGISTER_ITEMS(sol::state *lua) {
 	lua->new_usertype<Item>(
 		"Item",
-		/* entity base class */
 		sol::base_classes, sol::bases<Entity>(),
+		/* entity base class */
+		"pos", sol::property(&Entity::setPos, &Entity::getPos),
+		"vel", sol::property(&Entity::setVel, &Entity::getVel),
+		"acc", sol::property(&Entity::setAcc, &Entity::getAcc),
 		"new", sol::no_constructor,
 		"distanceTo", &Entity::distanceTo,
 		"getPos", &Entity::getPos,
@@ -122,7 +131,7 @@ void LuaInputWrapper::REGISTER(sol::state *lua, sf::RenderWindow *window, sf::Vi
 	);
 	
 	LuaInputWrapper::lua->create_named_table("__pointers__");
-
+	
 	LuaInputWrapper::lua->create_named_table("input",
 		"getMousePosition", [window](){ sf::Vector2i mp = sf::Mouse::getPosition(*window); return glm::vec2((float)mp.x, (float)mp.y); },
 		"getMouseButton", [](const char *key){
