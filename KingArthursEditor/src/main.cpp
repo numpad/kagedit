@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <tuple>
+#include <unordered_map>
 #include <string.h>
 #include <stdio.h>
 
@@ -246,11 +247,20 @@ public:
 };
 int Script::NEXT_ID = 0;
 
-sol::state new_luastate(sf::RenderWindow *window, sf::View *camera) {
+sol::state new_luastate(sf::RenderWindow *window, sf::View *camera, std::unordered_map<std::string, void *> data) {
 	sol::state lua;
 	lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string, sol::lib::os, sol::lib::math, sol::lib::table);
 	register_luaapi(lua);
 	LuaInputWrapper::REGISTER(&lua, window, camera);
+
+	/* register __pointers__ table */
+	for (auto it = data.begin(); it != data.end(); ++it) {
+		lua["__pointers__"][it->first] = (std::vector<void *> *)it->second;
+	}
+
+	lua["__pointers__"]["toEntity"] = [](void *ptr){ return (Entity *)ptr; };
+
+	/* run loader script */
 	lua.script_file("assets/scripts/loader.lua");
 
 	return lua;
@@ -288,9 +298,13 @@ int main(int argc, char *argv[]) {
 	entities.push_back(player);
 
 	/* open lua state, load init script */
-	sol::state lua = new_luastate(&window, &default_view);
-	lua["__pointers__"]["entities"] = &entities;
-	lua["__pointers__"]["items"] = &items;
+	std::unordered_map<std::string, void *> luaapi_pointers = {
+		{"entities", (void*)&entities},
+		{"items", (void *)&items}
+	};
+
+	sol::state lua = new_luastate(&window, &default_view, luaapi_pointers);
+	
 
 
 	std::vector<Script *> script_srcs;
@@ -388,7 +402,7 @@ int main(int argc, char *argv[]) {
 					script_srcs.push_back(new Script(&lua));
 				}
 				if (ImGui::MenuItem("Reset State")) {
-					lua = new_luastate(&window, &default_view);
+					lua = new_luastate(&window, &default_view, luaapi_pointers);
 				}
 				ImGui::Separator();
 				/* show menu item to open hidden scripts */

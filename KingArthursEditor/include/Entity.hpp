@@ -12,7 +12,7 @@ private:
 
 protected:
 	/* properties */
-	
+	float drag = 0.975f;
 	glm::vec2 pos = glm::vec2(0.0f),
 	          vel = glm::vec2(0.0f),
 	          acc = glm::vec2(0.0f);
@@ -38,6 +38,10 @@ public:
 	/* velocity */
 	glm::vec2 getVel();
 	void setVel(glm::vec2 vel);
+
+	/* physical properties */
+	float getDrag();
+	void setDrag(float drag);
 
 	/* acceleration */
 	glm::vec2 getAcc();

@@ -21,7 +21,7 @@ void Entity::updatePhysics(float dt_seconds) {
 	/* calculate new position TODO: */
 	this->vel += this->acc;
 	this->pos += this->vel * (dt_seconds * 60.0f);
-	this->vel *= 0.935f;
+	this->vel *= this->drag;
 }
 
 Entity::Entity() {
@@ -55,6 +55,14 @@ glm::vec2 Entity::getVel() {
 
 void Entity::setVel(glm::vec2 vel) {
 	this->vel = vel;
+}
+
+float Entity::getDrag() {
+	return this->drag;
+}
+
+void Entity::setDrag(float drag) {
+	this->drag = drag;
 }
 
 glm::vec2 Entity::getAcc() {
