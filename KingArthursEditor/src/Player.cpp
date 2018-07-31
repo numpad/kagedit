@@ -15,7 +15,7 @@ void Player::addController(Controller *c) {
 
 Player::Player(glm::vec2 pos, sf::RenderWindow *window) {
 	this->setPos(pos);
-	this->drag = 0.75f;
+	this->dragCoeff = 0.75f;
 
 	/* load texture and sprite */
 	assert(this->skin_stand.loadFromFile("assets/images/kenney-topdown/Survivor 1/survivor1_stand.png"));

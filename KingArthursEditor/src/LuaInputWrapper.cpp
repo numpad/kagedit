@@ -32,54 +32,29 @@ void LuaInputWrapper::REGISTER_PLAYER(sol::state *lua) {
 
 	lua->new_usertype<Player>(
 		"Player",
-		sol::base_classes, sol::bases<Entity>(),
-		/* entity base class */
-		"pos", sol::property(&Entity::setPos, &Entity::getPos),
-		"vel", sol::property(&Entity::setVel, &Entity::getVel),
-		"acc", sol::property(&Entity::setAcc, &Entity::getAcc),
-		"new", sol::no_constructor,
-		"distanceTo", &Entity::distanceTo,
-		"getPos", &Entity::getPos,
-		"setPos", &Entity::setPos,
-		"getVel", &Entity::getVel,
-		"setVel", &Entity::setVel,
-		"getAcc", &Entity::getAcc,
-		"setAcc", &Entity::setAcc,
-		"getDrag", &Entity::getDrag,
-		"setDrag", &Entity::setDrag,
-		"getViewDirection", &Entity::getViewDirection,
-		"getViewAngle", &Entity::getViewAngle,
-		"setViewTarget", &Entity::setViewTarget,
-		"setViewDirection", &Entity::setViewDirection,
-		"update", &Entity::update
+		sol::base_classes, sol::bases<Entity>()
 	);
 }
 
 void LuaInputWrapper::REGISTER_ITEMS(sol::state *lua) {
 	lua->new_usertype<Item>(
 		"Item",
-		sol::base_classes, sol::bases<Entity>(),
-		/* entity base class */
-		"pos", sol::property(&Entity::setPos, &Entity::getPos),
-		"vel", sol::property(&Entity::setVel, &Entity::getVel),
-		"acc", sol::property(&Entity::setAcc, &Entity::getAcc),
-		"new", sol::no_constructor,
-		"distanceTo", &Entity::distanceTo,
-		"getPos", &Entity::getPos,
-		"setPos", &Entity::setPos,
-		"getVel", &Entity::getVel,
-		"setVel", &Entity::setVel,
-		"getAcc", &Entity::getAcc,
-		"setAcc", &Entity::setAcc,
-		"getDrag", &Entity::getDrag,
-		"setDrag", &Entity::setDrag,
-		"getViewDirection", &Entity::getViewDirection,
-		"getViewAngle", &Entity::getViewAngle,
-		"setViewTarget", &Entity::setViewTarget,
-		"setViewDirection", &Entity::setViewDirection,
-		"update", &Entity::update
-
+		sol::base_classes, sol::bases<Entity>()
 	);
+}
+
+template <class T>
+static T *luaapi_ptrcast(void *d) {
+	return (T *)d;
+}
+
+void LuaInputWrapper::REGISTER_CASTS(sol::state &lua) {
+	lua["__pointers__"]["typecast"] = lua.create_table_with(
+		"toEntity",			&luaapi_ptrcast<Entity>,
+		"toPlayer",			&luaapi_ptrcast<Player>,
+		"toItem",			&luaapi_ptrcast<Item>
+	);
+
 }
 
 void LuaInputWrapper::REGISTER(sol::state *lua, sf::RenderWindow *window, sf::View *camera) {
@@ -127,7 +102,8 @@ void LuaInputWrapper::REGISTER(sol::state *lua, sf::RenderWindow *window, sf::Vi
 		sol::meta_function::concatenation,	glm_vec2_concat_overload,
 		"angle",							[](const glm::vec2 &v){ return glm::orientedAngle(v, glm::vec2(1.0f, 0.0f)); },
 		"length",							[](const glm::vec2 &v){ return glm::length(v); },
-		"dot",								[](const glm::vec2 &a, const glm::vec2 &b){ return glm::dot(a, b); }
+		"dot",								[](const glm::vec2 &a, const glm::vec2 &b){ return glm::dot(a, b); },
+		"normalize",						[](const glm::vec2 &v){ return glm::normalize(v); }
 	);
 	
 	LuaInputWrapper::lua->create_named_table("__pointers__");
@@ -161,6 +137,7 @@ void LuaInputWrapper::REGISTER(sol::state *lua, sf::RenderWindow *window, sf::Vi
 	LuaInputWrapper::lua->set("camera", *camera);
 
 	LuaInputWrapper::REGISTER_PLAYER(lua);
+	LuaInputWrapper::REGISTER_CASTS(*lua);
 }
 
 glm::vec2 LuaInputWrapper::getMousePosition() {

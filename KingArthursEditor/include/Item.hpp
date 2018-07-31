@@ -23,10 +23,10 @@ private:
 
 protected:
 	float collectableMagneticRadius = 45.0f;
-	float collectInRadius = 5.0f;
+	float collectInRadius = 8.0f;
 	bool collected = false;
 
-	std::string script_src = "print('hey')";
+	std::string script_src = "print('item collected')";
 
 	Item();
 

@@ -12,7 +12,7 @@ private:
 
 protected:
 	/* properties */
-	float drag = 0.975f;
+	float dragCoeff = 0.1f;
 	glm::vec2 pos = glm::vec2(0.0f),
 	          vel = glm::vec2(0.0f),
 	          acc = glm::vec2(0.0f);

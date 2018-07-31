@@ -247,18 +247,39 @@ public:
 };
 int Script::NEXT_ID = 0;
 
+void loadscripts(sol::state &lua, std::vector<Script *> &script_srcs, const char *basepath = "assets/scripts/debug/") {
+	/* load debug scripts */
+	script_srcs.clear();
+	for (std::string &fn : list_files(basepath)) {
+		char path[512];
+		sprintf(path, "%s%s", basepath, fn.c_str());
+
+		FILE *fp = fopen(path, "r");
+		if (!fp) continue;
+
+		fseek(fp, 0, SEEK_END);
+		size_t len = ftell(fp);
+		fseek(fp, 0, SEEK_SET);
+
+		char *src = new char[len + 1]();
+		fread(src, sizeof(char), len, fp);
+
+		fclose(fp);
+
+		script_srcs.push_back(new Script(&lua, src, fn.c_str(), true));
+	}
+}
+
 sol::state new_luastate(sf::RenderWindow *window, sf::View *camera, std::unordered_map<std::string, void *> data) {
 	sol::state lua;
-	lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string, sol::lib::os, sol::lib::math, sol::lib::table);
+	lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string, sol::lib::os, sol::lib::math, sol::lib::table, sol::lib::package);
 	register_luaapi(lua);
 	LuaInputWrapper::REGISTER(&lua, window, camera);
-
+	
 	/* register __pointers__ table */
 	for (auto it = data.begin(); it != data.end(); ++it) {
 		lua["__pointers__"][it->first] = (std::vector<void *> *)it->second;
 	}
-
-	lua["__pointers__"]["toEntity"] = [](void *ptr){ return (Entity *)ptr; };
 
 	/* run loader script */
 	lua.script_file("assets/scripts/loader.lua");
@@ -304,29 +325,9 @@ int main(int argc, char *argv[]) {
 	};
 
 	sol::state lua = new_luastate(&window, &default_view, luaapi_pointers);
-	
-
-
 	std::vector<Script *> script_srcs;
-	/* load debug scripts */
-	for (std::string &fn : list_files("assets/scripts/debug/")) {
-		char path[512];
-		sprintf(path, "assets/scripts/debug/%s", fn.c_str());
-
-		FILE *fp = fopen(path, "r");
-		if (!fp) continue;
-
-		fseek(fp, 0, SEEK_END);
-		size_t len = ftell(fp);
-		fseek(fp, 0, SEEK_SET);
-
-		char *src = new char[len + 1]();
-		fread(src, sizeof(char), len, fp);
-
-		fclose(fp);
-
-		script_srcs.push_back(new Script(&lua, src, fn.c_str(), true));
-	}
+	loadscripts(lua, script_srcs);
+	
 
 	sf::Time dt;
 	sf::Clock dt_clock;
@@ -403,6 +404,7 @@ int main(int argc, char *argv[]) {
 				}
 				if (ImGui::MenuItem("Reset State")) {
 					lua = new_luastate(&window, &default_view, luaapi_pointers);
+					loadscripts(lua, script_srcs);
 				}
 				ImGui::Separator();
 				/* show menu item to open hidden scripts */
@@ -433,7 +435,6 @@ int main(int argc, char *argv[]) {
 		
 		/* update */
 		glm::vec2 stick_right = get_axis(0, sf::Joystick::Axis::Z, sf::Joystick::Axis::R);
-		
 		
 		for (size_t i = 0; i < items.size(); ++i) {
 			Item *item = items.at(i);

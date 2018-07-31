@@ -1,6 +1,6 @@
 -- Change drag by scrolling
 
-local player = __pointers__.toEntity(__pointers__.entities:at(1))
+local player = __pointers__.typecast.toEntity(__pointers__.entities:at(1))
 local drag = 0.9;
 
 function on_mousescroll(d)

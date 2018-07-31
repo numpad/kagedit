@@ -18,10 +18,22 @@ void Entity::setTexture(const sf::Texture &texture, glm::vec2 origin) {
 }
 
 void Entity::updatePhysics(float dt_seconds) {
+	/* calculate drag force */
+	float speed = glm::length2(this->vel);
+	float dragMag = this->dragCoeff * speed;
+	glm::vec2 drag = this->vel;
+	drag *= -1.0f;
+	drag = glm::normalize(drag);
+	drag *= dragMag;
+	
+	if (glm::length(this->vel) > 0.000001f)
+		this->acc += drag;
+
 	/* calculate new position TODO: */
-	this->vel += this->acc;
+	this->vel += this->acc * (dt_seconds * 60.0f);
 	this->pos += this->vel * (dt_seconds * 60.0f);
-	this->vel *= this->drag;
+
+	this->acc = glm::vec2(0.0f);
 }
 
 Entity::Entity() {
@@ -58,11 +70,11 @@ void Entity::setVel(glm::vec2 vel) {
 }
 
 float Entity::getDrag() {
-	return this->drag;
+	return this->dragCoeff;
 }
 
 void Entity::setDrag(float drag) {
-	this->drag = drag;
+	this->dragCoeff = drag;
 }
 
 glm::vec2 Entity::getAcc() {
