@@ -7,6 +7,7 @@ float KeyboardController::isKeyDown(std::string key) {
 		return 0.0f;
 	}
 
+	if (sf::Keyboard::isKeyPressed(search->second)) this->gotActiveInput = true;
 	return sf::Keyboard::isKeyPressed(search->second) ? 1.0f : 0.0f;
 }
 
@@ -24,6 +25,8 @@ void KeyboardController::mapKey(const std::string name, const sf::Keyboard::Key 
 }
 
 void KeyboardController::readInput() {
+	this->gotActiveInput = false;
+
 	this->axis.x = this->isKeyDown("right");
 	this->axis.x -= this->isKeyDown("left");
 	this->axis.y = this->isKeyDown("down");
@@ -35,6 +38,7 @@ void KeyboardController::readInput() {
 }
 
 void KeyboardController::update(float dt_seconds) {
-	entity->setAcc(this->axis * 0.25f);
+	if (this->gotActiveInput)
+		entity->setAcc(entity->getAcc() + this->axis);
 }
 

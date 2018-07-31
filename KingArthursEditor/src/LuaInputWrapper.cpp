@@ -36,10 +36,24 @@ void LuaInputWrapper::REGISTER_PLAYER(sol::state *lua) {
 	);
 }
 
+static Item *luaapi_new_simpleitem(std::string name, glm::vec2 pos) {
+	if (name == "gun")
+		return new ItemGun(pos);
+
+	return nullptr;
+}
+
 void LuaInputWrapper::REGISTER_ITEMS(sol::state *lua) {
 	lua->new_usertype<Item>(
 		"Item",
-		sol::base_classes, sol::bases<Entity>()
+		sol::base_classes, sol::bases<Entity>(),
+		"new", sol::no_constructor
+	);
+
+	lua->new_usertype<ItemGun>(
+		"ItemGun",
+		sol::base_classes, sol::bases<Entity, Item>(),
+		"new", sol::constructors<ItemGun(glm::vec2)>()
 	);
 }
 
@@ -122,7 +136,7 @@ void LuaInputWrapper::REGISTER(sol::state *lua, sf::RenderWindow *window, sf::Vi
 	);
 	
 	LuaInputWrapper::lua->new_usertype<sf::View>(
-		"camera2d",
+		"Camera2d",
 		sol::constructors<sf::View()>(),
 		"getPosition", [](const sf::View &camera){ const sf::Vector2f pos = camera.getCenter(); return glm::vec2(pos.x, pos.y); },
 		"getSize", [](const sf::View &camera){ const sf::Vector2f s = camera.getSize(); return glm::vec2(s.x, s.y); },
@@ -137,6 +151,7 @@ void LuaInputWrapper::REGISTER(sol::state *lua, sf::RenderWindow *window, sf::Vi
 	LuaInputWrapper::lua->set("camera", *camera);
 
 	LuaInputWrapper::REGISTER_PLAYER(lua);
+	LuaInputWrapper::REGISTER_ITEMS(lua);
 	LuaInputWrapper::REGISTER_CASTS(*lua);
 }
 

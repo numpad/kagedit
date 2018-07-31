@@ -10,6 +10,7 @@
 class KeyboardController : public Controller {
 private:
 	glm::vec2 axis = glm::vec2(0.0f);
+	bool gotActiveInput = false;
 
 protected:
 	std::unordered_map<std::string, sf::Keyboard::Key> keymap;

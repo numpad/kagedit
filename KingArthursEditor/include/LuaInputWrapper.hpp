@@ -21,7 +21,7 @@ class LuaInputWrapper {
 	static void REGISTER_PLAYER(sol::state *lua);
 	static void REGISTER_ITEMS(sol::state *lua);
 	static void REGISTER_CASTS(sol::state &lua);
-
+	
 public:
 	static sol::state *lua;
 	static sf::RenderWindow *window;

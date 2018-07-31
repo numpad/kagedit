@@ -270,16 +270,15 @@ void loadscripts(sol::state &lua, std::vector<Script *> &script_srcs, const char
 	}
 }
 
-sol::state new_luastate(sf::RenderWindow *window, sf::View *camera, std::unordered_map<std::string, void *> data) {
+sol::state new_luastate(sf::RenderWindow *window, sf::View *camera, std::vector<Entity *> &entities, std::vector<Item *> &items) {
 	sol::state lua;
 	lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string, sol::lib::os, sol::lib::math, sol::lib::table, sol::lib::package);
 	register_luaapi(lua);
 	LuaInputWrapper::REGISTER(&lua, window, camera);
 	
 	/* register __pointers__ table */
-	for (auto it = data.begin(); it != data.end(); ++it) {
-		lua["__pointers__"][it->first] = (std::vector<void *> *)it->second;
-	}
+	lua["__pointers__"]["entities"] = &entities;
+	lua["__pointers__"]["items"] = &items;
 
 	/* run loader script */
 	lua.script_file("assets/scripts/loader.lua");
@@ -319,12 +318,7 @@ int main(int argc, char *argv[]) {
 	entities.push_back(player);
 
 	/* open lua state, load init script */
-	std::unordered_map<std::string, void *> luaapi_pointers = {
-		{"entities", (void*)&entities},
-		{"items", (void *)&items}
-	};
-
-	sol::state lua = new_luastate(&window, &default_view, luaapi_pointers);
+	sol::state lua = new_luastate(&window, &default_view, entities, items);
 	std::vector<Script *> script_srcs;
 	loadscripts(lua, script_srcs);
 	
@@ -352,6 +346,14 @@ int main(int argc, char *argv[]) {
 				ImGui::SameLine();
 				if (ImGui::Button("Spawn")) {
 					items.push_back(new ItemGun(glm::vec2(_ipos[0], _ipos[1])));
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("Random")) {
+					for (int i = 0; i < 10; ++i) {
+						float x = (float)rand() / (float)RAND_MAX;
+						float y = (float)rand() / (float)RAND_MAX;
+						items.push_back(new ItemGun(glm::vec2(x * 800.0f, y * 600.0f)));
+					}
 				}
 				ImGui::Separator();
 
@@ -403,7 +405,7 @@ int main(int argc, char *argv[]) {
 					script_srcs.push_back(new Script(&lua));
 				}
 				if (ImGui::MenuItem("Reset State")) {
-					lua = new_luastate(&window, &default_view, luaapi_pointers);
+					lua = new_luastate(&window, &default_view, entities, items);
 					loadscripts(lua, script_srcs);
 				}
 				ImGui::Separator();

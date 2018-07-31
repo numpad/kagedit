@@ -26,12 +26,15 @@ void Entity::updatePhysics(float dt_seconds) {
 	drag = glm::normalize(drag);
 	drag *= dragMag;
 	
-	if (glm::length(this->vel) > 0.000001f)
-		this->acc += drag;
+	//if (glm::length(this->vel) > 0.000001f)
+		//this->acc += drag;
 
 	/* calculate new position TODO: */
 	this->vel += this->acc * (dt_seconds * 60.0f);
 	this->pos += this->vel * (dt_seconds * 60.0f);
+	
+	// todo: remove
+	this->vel *= 0.95f;
 
 	this->acc = glm::vec2(0.0f);
 }
