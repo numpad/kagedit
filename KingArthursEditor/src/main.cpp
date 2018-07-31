@@ -36,6 +36,8 @@ extern "C" {
 #include "MouseController.hpp"
 #include "JoystickController.hpp"
 
+#include "World.hpp"
+
 #include "LuaInputWrapper.hpp"
 
 #if !defined(_WIN32)
@@ -302,8 +304,6 @@ int main(int argc, char *argv[]) {
 	bool vsync_enabled = true;
 	sf::RenderWindow window(sf::VideoMode(800, 600), "p.flesh " __VERSION__);
 	window.setVerticalSyncEnabled(vsync_enabled);
-	sf::View default_view(sf::FloatRect(0.0f, 0.0f, (float)window.getSize().x, (float)window.getSize().y));
-	window.setView(default_view);
 
 	/* init imgui */
 	ImGui::CreateContext();
@@ -312,13 +312,12 @@ int main(int argc, char *argv[]) {
 	ImGui::StyleColorsLight();
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 	
-	std::vector<Entity *> entities;
-	std::vector<Item *> items;
+	World world(window);
 	Player *player = new Player(glm::vec2(350.0f), &window);
-	entities.push_back(player);
+	world.spawnEntity(player);
 
 	/* open lua state, load init script */
-	sol::state lua = new_luastate(&window, &default_view, entities, items);
+	sol::state lua = new_luastate(&window, &world.getCamera(), world.entities, world.items);
 	std::vector<Script *> script_srcs;
 	loadscripts(lua, script_srcs);
 	
@@ -345,14 +344,14 @@ int main(int argc, char *argv[]) {
 				ImGui::InputFloat2("pos", _ipos);
 				ImGui::SameLine();
 				if (ImGui::Button("Spawn")) {
-					items.push_back(new ItemGun(glm::vec2(_ipos[0], _ipos[1])));
+					world.spawnItem(new ItemGun(glm::vec2(_ipos[0], _ipos[1])));
 				}
 				ImGui::SameLine();
 				if (ImGui::Button("Random")) {
 					for (int i = 0; i < 10; ++i) {
 						float x = (float)rand() / (float)RAND_MAX;
 						float y = (float)rand() / (float)RAND_MAX;
-						items.push_back(new ItemGun(glm::vec2(x * 800.0f, y * 600.0f)));
+						world.spawnItem(new ItemGun(glm::vec2(x * 800.0f, y * 600.0f)));
 					}
 				}
 				ImGui::Separator();
@@ -405,7 +404,7 @@ int main(int argc, char *argv[]) {
 					script_srcs.push_back(new Script(&lua));
 				}
 				if (ImGui::MenuItem("Reset State")) {
-					lua = new_luastate(&window, &default_view, entities, items);
+					lua = new_luastate(&window, &world.getCamera(), world.entities, world.items);
 					loadscripts(lua, script_srcs);
 				}
 				ImGui::Separator();
@@ -437,41 +436,15 @@ int main(int argc, char *argv[]) {
 		
 		/* update */
 		glm::vec2 stick_right = get_axis(0, sf::Joystick::Axis::Z, sf::Joystick::Axis::R);
-		
-		for (size_t i = 0; i < items.size(); ++i) {
-			Item *item = items.at(i);
-			if (item->isCollected()) {
-				items.erase(items.begin() + i);
-				continue;
-			}
-		}
-
-		for (auto it = entities.begin(); it != entities.end(); ++it) {
-			Entity *entity = *it;
-			entity->update(dt.asSeconds());
-			for (auto item_it = items.begin(); item_it != items.end(); ++item_it) {
-				Item *item = *item_it;
-				if (!item->isCollected() && item->isCollectableBy(*entity)) {
-					item->onEntityNear(*entity, lua);
-				}
-			}
-		}
-		for (Item *item : items) {
-			item->update(dt.asSeconds());
-		}
-
 		player->setViewDirection(stick_right);
+	
+		world.update(dt.asSeconds(), lua);
 		
 		/* render */
 		window.clear(sf::Color(33, 33, 33));
-		for (Item *item : items) {
-			item->draw(window);
-		}
-		for (Entity *entity : entities) {
-			entity->draw(window);
-		}
+		world.render();
 		
-		
+		/* imgui render */
 		if (render_imgui) {
 			ImGui::EndFrame();
 			ImGui::SFML::Render(window);
@@ -484,8 +457,6 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	for (Entity *e : entities) delete e;
-	for (Item *i : items) delete i;
 	for (Script *s : script_srcs) delete s;
 
 	ImGui::SFML::Shutdown();

@@ -146,6 +146,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\MouseController.cpp" />
     <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Controller.hpp" />
@@ -157,6 +158,7 @@
     <ClInclude Include="include\LuaInputWrapper.hpp" />
     <ClInclude Include="include\MouseController.hpp" />
     <ClInclude Include="include\Player.hpp" />
+    <ClInclude Include="include\World.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
