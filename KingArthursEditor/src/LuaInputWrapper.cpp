@@ -79,7 +79,8 @@ void LuaInputWrapper::REGISTER_EVENTMANAGER(sol::state &lua) {
 		"delete", &EventManager::deleteEvent,
 		"clear", &EventManager::clearEvents,
 		"get", &EventManager::getEvents,
-		"list", &EventManager::getList
+		"list", &EventManager::getList,
+		"call", &EventManager::callEventFromLua
 	);
 }
 
