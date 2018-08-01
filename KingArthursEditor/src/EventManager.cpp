@@ -3,13 +3,16 @@
 EventManager::EventManager() {
 }
 
-EventManager::EventManager(sol::state &lua)
-	: lua(&lua)
-{	
-}
+std::vector<std::tuple<std::string, size_t>> EventManager::getList() {
+	std::vector<std::tuple<std::string, size_t>> list;
 
-void EventManager::setEnvironment(sol::state &lua) {
-	this->lua = &lua;
+	for (auto it = this->events.begin(); it != this->events.end(); ++it) {
+		list.push_back(
+			std::make_tuple(it->first, it->second.size())
+		);
+	}
+
+	return list;
 }
 
 std::vector<sol::object>& EventManager::getEvents(std::string name) {

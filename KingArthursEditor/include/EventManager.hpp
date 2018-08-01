@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <tuple>
 #include <unordered_map>
 
 extern "C" {
@@ -14,32 +15,29 @@ extern "C" {
 #include <sol.hpp>
 
 class EventManager {
-	sol::state *lua;
-
 	std::unordered_map<std::string, std::vector<sol::object>> events;
 
 public:
 
 	EventManager();
-	EventManager(sol::state &lua);
 
-	void setEnvironment(sol::state &lua);
-
+	std::vector<std::tuple<std::string, size_t>> getList();
 	std::vector<sol::object> &getEvents(std::string name);
 
 	void clearEvents(std::string event_name);
 	int addEvent(std::string event_name, sol::object func);
 	void deleteEvent(std::string event_name, int index);
 
-	void callEvent(std::string event_name) {
-		auto &&search = this->events.find(event_name);
+	template <class... Args>
+	void callEvent(std::string event_name, Args&&... args) {
+		auto search = this->events.find(event_name);
 		if (search == this->events.end()) {
 			return;
 		}
 
-		std::vector<sol::object> funcs = search->second;
-		for (size_t i = 0; i < funcs.size(); ++i) {
-			sol::function(funcs.at(i)).call();
+		std::vector<sol::object> &funcs = search->second;
+		for (auto it = funcs.begin(); it != funcs.end(); ++it) {
+			((sol::function)*it).call(std::forward<Args>(args)...);
 		}
 	}
 

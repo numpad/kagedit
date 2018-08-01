@@ -207,8 +207,6 @@ sol::state new_luastate(sf::RenderWindow *window, sf::View *camera, EventManager
 	lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string, sol::lib::os, sol::lib::math, sol::lib::table, sol::lib::package);
 	register_luaapi(lua);
 	LuaInputWrapper::REGISTER(&lua, window, camera);
-	
-	manager.setEnvironment(lua);
 
 	/* register __pointers__ table */
 	lua["__pointers__"]["entities"] = &entities;
@@ -257,7 +255,7 @@ int main(int argc, char *argv[]) {
 	sol::function f;
 	
 	manager.callEvent("on_start");
-
+	
 	sf::Time dt;
 	sf::Clock dt_clock;
 	int asks = 0, asks_count = 10;
