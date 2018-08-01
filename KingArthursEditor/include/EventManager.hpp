@@ -20,6 +20,8 @@ class EventManager {
 public:
 
 	EventManager();
+	EventManager(const EventManager &other);
+	~EventManager();
 
 	std::vector<std::tuple<std::string, size_t>> getList();
 	std::vector<sol::object> &getEvents(std::string name);

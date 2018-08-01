@@ -40,7 +40,7 @@ void Entity::updatePhysics(float dt_seconds) {
 }
 
 Entity::Entity() {
-
+	printf("[!!!] entity init\n");
 }
 
 
@@ -49,7 +49,7 @@ Entity::Entity() {
 \******************/
 
 Entity::~Entity() {
-
+	printf("[!!!] destructing entity %g,%g\n", this->pos.x, this->pos.y);
 }
 
 float Entity::distanceTo(Entity &other) {

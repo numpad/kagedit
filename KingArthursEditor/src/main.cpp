@@ -254,6 +254,7 @@ int main(int argc, char *argv[]) {
 	loadscripts(lua, script_srcs);
 	sol::function f;
 	
+	world.spawnItem(new ItemGun(glm::vec2(400, 500)));
 	manager.callEvent("on_start");
 	
 	sf::Time dt;
@@ -263,33 +264,18 @@ int main(int argc, char *argv[]) {
 	
 	while (window.isOpen()) {
 		sf::Time dt = dt_clock.restart();
-		window.setView(lua["camera"]);
 		
 		static bool close = false, render_imgui = true, render_imgui_toggle = false;
-		if (close) window.close();
+		if (close) { window.close(); continue; }
 		handle_events(window, render_imgui, lua);
+		if (!render_imgui && sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt)) {
+			render_imgui_toggle = true;
+		}
 
 		if (render_imgui) {
 			ImGui::SFML::Update(window, dt);
 
-			ImGui::Begin("Items");
-				static float _ipos[2];
-				ImGui::Text("Spawn Item:");
-				ImGui::InputFloat2("pos", _ipos);
-				ImGui::SameLine();
-				if (ImGui::Button("Spawn")) {
-					world.spawnItem(new ItemGun(glm::vec2(_ipos[0], _ipos[1])));
-				}
-				ImGui::SameLine();
-				if (ImGui::Button("Random")) {
-					for (int i = 0; i < 10; ++i) {
-						float x = (float)rand() / (float)RAND_MAX;
-						float y = (float)rand() / (float)RAND_MAX;
-						world.spawnItem(new ItemGun(glm::vec2(x * 800.0f, y * 600.0f)));
-					}
-				}
-				ImGui::Separator();
-
+			ImGui::Begin("Controller");
 				static bool controller_keyboard = true;
 				ImGui::Text("Controls:");
 				if (ImGui::RadioButton("Keyboard", controller_keyboard) && !controller_keyboard) {
@@ -326,7 +312,7 @@ int main(int argc, char *argv[]) {
 			}
 
 			if (ImGui::BeginMenu("File")) {
-				if (ImGui::MenuItem("Hide Menubar")) {
+				if (ImGui::MenuItem("Hide ImGui")) {
 					render_imgui_toggle = true;
 				}
 				ImGui::Separator();
@@ -392,7 +378,13 @@ int main(int argc, char *argv[]) {
 	}
 
 	for (Script *s : script_srcs) delete s;
-
+	
+	// dummy, keep sol alive
+	puts("killing SOL NOW <<<");
+	lua.new_usertype<glm::vec3>(
+		"vec3",
+		"new", sol::no_constructor
+	);
 	ImGui::SFML::Shutdown();
 	
 	return 0;

@@ -19,6 +19,10 @@ Item::Item() {
 	this->bgshape.setOutlineThickness(3.0f);
 }
 
+Item::~Item() {
+	
+}
+
 float Item::getCollectableRadius() {
 	return this->collectableMagneticRadius;
 }

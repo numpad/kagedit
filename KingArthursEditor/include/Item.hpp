@@ -31,6 +31,12 @@ protected:
 	Item();
 
 public:
+	
+	Item(const Item &other) {
+		puts("[...] item copied");
+	}
+
+	virtual ~Item();
 
 	/* member access */
 	float getCollectableRadius();

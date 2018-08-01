@@ -24,8 +24,9 @@ protected:
 	void updatePhysics(float dt_seconds);
 
 	Entity();
-
+	
 public:
+	
 	virtual ~Entity();
 
 	/* util */

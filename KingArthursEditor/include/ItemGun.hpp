@@ -14,6 +14,7 @@ private:
 public:
 	
 	ItemGun(glm::vec2 pos);
+	~ItemGun();
 
 };
 

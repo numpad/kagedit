@@ -6,3 +6,8 @@ ItemGun::ItemGun(glm::vec2 pos) {
 	this->setPos(pos);
 	this->setTexture(this->gun_texture);
 }
+
+ItemGun::~ItemGun() {
+	
+}
+

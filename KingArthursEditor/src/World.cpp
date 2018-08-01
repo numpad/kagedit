@@ -18,11 +18,16 @@ World::World(sf::RenderWindow &window)
 }
 
 World::~World() {
-	for (Entity *e : entities)
-		delete e;
-	
-	for (Item *i : items)
-		delete i;
+	//this->destroy();
+}
+
+void World::destroy() {
+	puts("WORLD DESTRUCT start <");
+	for (size_t i = 0; i < items.size(); ++i)    delete items.at(i);
+	for (size_t i = 0; i < entities.size(); ++i) delete entities.at(i);
+	entities.clear();
+	items.clear();
+	puts("WORLD DESTRUCT end   >");
 }
 
 void World::spawnEntity(Entity *e) {
@@ -33,7 +38,7 @@ void World::spawnItem(Item *i) {
 	this->items.push_back(i);
 }
 
-sf::View & World::getCamera() {
+sf::View &World::getCamera() {
 	return this->camera;
 }
 

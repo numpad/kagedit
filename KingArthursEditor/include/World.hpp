@@ -36,6 +36,8 @@ public:
 
 	World(sf::RenderWindow &window);
 	~World();
+	
+	void destroy();
 
 	void removeCollectedItems();
 

@@ -3,6 +3,12 @@
 EventManager::EventManager() {
 }
 
+EventManager::EventManager(const EventManager &other) {
+}
+
+EventManager::~EventManager() {
+}
+
 std::vector<std::tuple<std::string, size_t>> EventManager::getList() {
 	std::vector<std::tuple<std::string, size_t>> list;
 
