@@ -71,6 +71,16 @@ void LuaInputWrapper::REGISTER_CASTS(sol::state &lua) {
 
 }
 
+void LuaInputWrapper::REGISTER_EVENTMANAGER(sol::state &lua) {
+	lua.new_usertype<EventManager>(
+		"EventManager",
+		"new", sol::no_constructor,
+		"add", &EventManager::addEvent,
+		"delete", &EventManager::deleteEvent,
+		"clear", &EventManager::clearEvents
+	);
+}
+
 void LuaInputWrapper::REGISTER(sol::state *lua, sf::RenderWindow *window, sf::View *camera) {
 	LuaInputWrapper::lua = lua;
 	LuaInputWrapper::window = window;
@@ -153,6 +163,7 @@ void LuaInputWrapper::REGISTER(sol::state *lua, sf::RenderWindow *window, sf::Vi
 	LuaInputWrapper::REGISTER_PLAYER(lua);
 	LuaInputWrapper::REGISTER_ITEMS(lua);
 	LuaInputWrapper::REGISTER_CASTS(*lua);
+	LuaInputWrapper::REGISTER_EVENTMANAGER(*lua);
 }
 
 glm::vec2 LuaInputWrapper::getMousePosition() {

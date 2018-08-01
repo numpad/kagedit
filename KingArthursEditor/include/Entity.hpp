@@ -52,10 +52,6 @@ public:
 	float getViewAngle(glm::vec2 base_dir = glm::vec2(1.0f, 0.0f));
 	void setViewTarget(glm::vec2 target_pos);
 	void setViewDirection(glm::vec2 target_dir);
-
-
-	/* items */
-	//virtual void onCollect(Item &item);
 	
 	/* update/render */
 	virtual void update(float dt);

@@ -138,6 +138,7 @@
     <ClCompile Include="lib\imgui\imgui_draw.cpp" />
     <ClCompile Include="lib\imgui\imgui_impl.cpp" />
     <ClCompile Include="src\Entity.cpp" />
+    <ClCompile Include="src\EventManager.cpp" />
     <ClCompile Include="src\Item.cpp" />
     <ClCompile Include="src\ItemGun.cpp" />
     <ClCompile Include="src\JoystickController.cpp" />
@@ -146,11 +147,13 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\MouseController.cpp" />
     <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\Script.cpp" />
     <ClCompile Include="src\World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Controller.hpp" />
     <ClInclude Include="include\Entity.hpp" />
+    <ClInclude Include="include\EventManager.hpp" />
     <ClInclude Include="include\Item.hpp" />
     <ClInclude Include="include\ItemGun.hpp" />
     <ClInclude Include="include\JoystickController.hpp" />
@@ -158,6 +161,7 @@
     <ClInclude Include="include\LuaInputWrapper.hpp" />
     <ClInclude Include="include\MouseController.hpp" />
     <ClInclude Include="include\Player.hpp" />
+    <ClInclude Include="include\Script.hpp" />
     <ClInclude Include="include\World.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

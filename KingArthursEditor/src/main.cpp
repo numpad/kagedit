@@ -1,8 +1,5 @@
-#define __VERSION__ "0.0.1"
+#define __VERSION__ "0.1.0"
 #define SOL_CHECK_ARGUMENTS 1
-#define SOL_NO_EXCEPTIONS 1
-
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
 
 #include <iostream>
 #include <string>
@@ -38,7 +35,9 @@ extern "C" {
 
 #include "World.hpp"
 
+#include "Script.hpp"
 #include "LuaInputWrapper.hpp"
+#include "EventManager.hpp"
 
 #if !defined(_WIN32)
 #define sprintf_s sprintf
@@ -180,75 +179,6 @@ void register_luaapi(sol::state &lua) {
 	lua_setglobal(L, "list_files");
 }
 
-class Script {
-public:
-	int name_len = 64;
-	static int NEXT_ID;
-	int id;
-
-	char *name;
-	sol::state *lua;
-	char *src;
-	size_t len;
-	bool shown;
-
-	Script(sol::state *lua, size_t len = 2048) {
-		this->src = new char[len]();
-		this->len = len;
-		this->shown = true;
-		this->id = Script::NEXT_ID++;
-		this->lua = lua;
-
-		this->name = new char[Script::name_len]();
-		sprintf(this->name, "Script #%d", this->id);
-	}
-
-	Script(sol::state *lua, char *content, const char *name, bool hidden = false) {
-		this->len = MAX(strlen(content) * 2, 2048);
-		this->src = new char[this->len + 1]();
-
-		strncpy(this->src, content, this->len);
-
-		this->shown = !hidden;
-		this->id = Script::NEXT_ID++;
-		this->lua = lua;
-
-		this->name_len = strlen(name) + 1;
-		this->name = new char[this->name_len]();
-		strncpy(this->name, name, strlen(name));
-	}
-
-	~Script() {
-		delete[] this->src;
-	}
-
-	void hide() {
-		this->shown = false;
-	}
-
-	void execute() {
-		this->lua->safe_script(this->src);
-	}
-
-	void render() {
-		if (!this->shown) return;
-
-		char title[128];
-		sprintf(title, "%s###1%d", this->name, this->id);
-
-		ImGui::Begin(title, &this->shown);
-			ImGui::InputText("##Name", this->name, Script::name_len);
-			ImGui::SameLine();
-			if (ImGui::Button("Run")) {
-				this->execute();
-			}
-			float height = 62.0f;
-			ImGui::InputTextMultiline("", this->src, this->len, ImVec2(ImGui::GetWindowWidth() - 18.0f, ImGui::GetWindowHeight() - height));
-		ImGui::End();
-	}
-};
-int Script::NEXT_ID = 0;
-
 void loadscripts(sol::state &lua, std::vector<Script *> &script_srcs, const char *basepath = "assets/scripts/debug/") {
 	/* load debug scripts */
 	script_srcs.clear();
@@ -272,15 +202,18 @@ void loadscripts(sol::state &lua, std::vector<Script *> &script_srcs, const char
 	}
 }
 
-sol::state new_luastate(sf::RenderWindow *window, sf::View *camera, std::vector<Entity *> &entities, std::vector<Item *> &items) {
+sol::state new_luastate(sf::RenderWindow *window, sf::View *camera, EventManager &manager, std::vector<Entity *> &entities, std::vector<Item *> &items) {
 	sol::state lua;
 	lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string, sol::lib::os, sol::lib::math, sol::lib::table, sol::lib::package);
 	register_luaapi(lua);
 	LuaInputWrapper::REGISTER(&lua, window, camera);
 	
+	manager.setEnvironment(lua);
+
 	/* register __pointers__ table */
 	lua["__pointers__"]["entities"] = &entities;
 	lua["__pointers__"]["items"] = &items;
+	lua["__pointers__"]["events"] = &manager;
 
 	/* run loader script */
 	lua.script_file("assets/scripts/loader.lua");
@@ -317,10 +250,13 @@ int main(int argc, char *argv[]) {
 	world.spawnEntity(player);
 
 	/* open lua state, load init script */
-	sol::state lua = new_luastate(&window, &world.getCamera(), world.entities, world.items);
+	EventManager manager;
+	sol::state lua = new_luastate(&window, &world.getCamera(), manager, world.entities, world.items);
 	std::vector<Script *> script_srcs;
 	loadscripts(lua, script_srcs);
+	sol::function f;
 	
+	manager.callEvent("on_start");
 
 	sf::Time dt;
 	sf::Clock dt_clock;
@@ -404,7 +340,7 @@ int main(int argc, char *argv[]) {
 					script_srcs.push_back(new Script(&lua));
 				}
 				if (ImGui::MenuItem("Reset State")) {
-					lua = new_luastate(&window, &world.getCamera(), world.entities, world.items);
+					lua = new_luastate(&window, &world.getCamera(), manager, world.entities, world.items);
 					loadscripts(lua, script_srcs);
 				}
 				ImGui::Separator();

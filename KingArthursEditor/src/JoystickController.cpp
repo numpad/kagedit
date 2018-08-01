@@ -39,7 +39,7 @@ void JoystickController::readInput() {
 
 		static float s = 1.0f, b = 0.0f, c = 1.0f, d = 1.0f;
 		static int exp = 4;
-		axis = easeInOut(axis, b, c, d, exp) * s;
+		axis = easeInOut(axis, b, c, d, (float)exp) * s;
 	} else {
 		axis.x = axis.y = 0.0f;
 	}
