@@ -10,6 +10,8 @@ void Item::animate(float dt_seconds) {
 }
 
 Item::Item() {
+	this->setName("entity_item");
+
 	this->bgshape.setRadius(this->bgshape_radius);
 	this->bgshape.setOrigin(sf::Vector2f(this->bgshape_radius, this->bgshape_radius));
 

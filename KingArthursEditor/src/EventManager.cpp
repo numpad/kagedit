@@ -3,10 +3,8 @@
 EventManager::EventManager() {
 }
 
-EventManager::EventManager(const EventManager &other) {
-}
-
 EventManager::~EventManager() {
+	puts("[xxx] destructing eventmanager...");
 }
 
 std::vector<std::tuple<std::string, size_t>> EventManager::getList() {
@@ -21,7 +19,7 @@ std::vector<std::tuple<std::string, size_t>> EventManager::getList() {
 	return list;
 }
 
-std::vector<sol::object>& EventManager::getEvents(std::string name) {
+std::vector<sol::object> &EventManager::getEvents(std::string name) {
 	auto search = this->events.find(name);
 	if (search == this->events.end()) {
 		this->events[name] = std::vector<sol::object>();

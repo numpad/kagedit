@@ -10,11 +10,14 @@ void LuaInputWrapper::REGISTER_PLAYER(sol::state *lua) {
 	lua->new_usertype<Entity>(
 		"Entity",
 		/* entity base class */
+		"name", sol::property(&Entity::setName, &Entity::getName),
 		"pos", sol::property(&Entity::setPos, &Entity::getPos),
 		"vel", sol::property(&Entity::setVel, &Entity::getVel),
 		"acc", sol::property(&Entity::setAcc, &Entity::getAcc),
 		"new", sol::no_constructor,
 		"distanceTo", &Entity::distanceTo,
+		"getName", &Entity::getName,
+		"setName", &Entity::setName,
 		"getPos", &Entity::getPos,
 		"setPos", &Entity::setPos,
 		"getVel", &Entity::getVel,
@@ -36,13 +39,6 @@ void LuaInputWrapper::REGISTER_PLAYER(sol::state *lua) {
 	);
 }
 
-static Item *luaapi_new_simpleitem(std::string name, glm::vec2 pos) {
-	if (name == "gun")
-		return new ItemGun(pos);
-
-	return nullptr;
-}
-
 void LuaInputWrapper::REGISTER_ITEMS(sol::state *lua) {
 	lua->new_usertype<Item>(
 		"Item",
@@ -53,7 +49,7 @@ void LuaInputWrapper::REGISTER_ITEMS(sol::state *lua) {
 	lua->new_usertype<ItemGun>(
 		"ItemGun",
 		sol::base_classes, sol::bases<Entity, Item>(),
-		"new", sol::constructors<ItemGun(glm::vec2)>()
+		"new", sol::factories([](glm::vec2 p){ return new ItemGun(p); })
 	);
 }
 
@@ -63,6 +59,7 @@ static T *luaapi_ptrcast(void *d) {
 }
 
 void LuaInputWrapper::REGISTER_CASTS(sol::state &lua) {
+	lua.create_named_table("__pointers__");
 	lua["__pointers__"]["typecast"] = lua.create_table_with(
 		"toEntity",			&luaapi_ptrcast<Entity>,
 		"toPlayer",			&luaapi_ptrcast<Player>,
@@ -132,9 +129,7 @@ void LuaInputWrapper::REGISTER(sol::state *lua, sf::RenderWindow *window, sf::Vi
 		"dot",								[](const glm::vec2 &a, const glm::vec2 &b){ return glm::dot(a, b); },
 		"normalize",						[](const glm::vec2 &v){ return glm::normalize(v); }
 	);
-	
-	LuaInputWrapper::lua->create_named_table("__pointers__");
-	
+		
 	LuaInputWrapper::lua->create_named_table("input",
 		"getMousePosition", [window](){ sf::Vector2i mp = sf::Mouse::getPosition(*window); return glm::vec2((float)mp.x, (float)mp.y); },
 		"getMouseButton", [](const char *key){
@@ -183,3 +178,4 @@ glm::vec2 LuaInputWrapper::getMousePosition() {
 	sf::Vector2i mouse = sf::Mouse::getPosition(*window);
 	return glm::vec2((float)mouse.x, (float)mouse.y);
 }
+

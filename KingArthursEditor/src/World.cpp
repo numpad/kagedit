@@ -1,11 +1,12 @@
 #include "World.hpp"
 
 void World::removeCollectedItems() {
-	for (size_t i = 0; i < this->items.size(); ++i) {
-		Item *item = this->items.at(i);
+	for (auto it = this->items.begin(); it != this->items.end(); ++it) {
+		Item *item = *it;
 		if (item->isCollected()) {
-			items.erase(this->items.begin() + i);
-			continue;
+			delete item;
+			it = this->items.erase(it);
+			if (it == this->items.end()) return;
 		}
 	}
 }
@@ -23,7 +24,9 @@ World::~World() {
 
 void World::destroy() {
 	puts("WORLD DESTRUCT start <");
+	printf("  #items=%d\n", (int)items.size());
 	for (size_t i = 0; i < items.size(); ++i)    delete items.at(i);
+	printf("  #entities=%d\n", (int)entities.size());
 	for (size_t i = 0; i < entities.size(); ++i) delete entities.at(i);
 	entities.clear();
 	items.clear();

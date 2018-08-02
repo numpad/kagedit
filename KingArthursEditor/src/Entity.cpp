@@ -49,11 +49,19 @@ Entity::Entity() {
 \******************/
 
 Entity::~Entity() {
-	printf("[!!!] destructing entity %g,%g\n", this->pos.x, this->pos.y);
+	printf("[!!!] destructing entity:%s %g,%g\n", this->name.c_str(), this->pos.x, this->pos.y);
 }
 
 float Entity::distanceTo(Entity &other) {
 	return glm::distance(this->getPos(), other.getPos());
+}
+
+void Entity::setName(std::string name) {
+	this->name = name;
+}
+
+std::string Entity::getName() {
+	return this->name;
 }
 
 glm::vec2 Entity::getPos() {

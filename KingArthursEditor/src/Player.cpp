@@ -5,7 +5,7 @@ void Player::setController(Controller *c) {
 		delete this->controllers.at(i);
 	}
 	this->controllers.clear();
-
+	
 	this->addController(c);
 }
 
@@ -14,6 +14,10 @@ void Player::addController(Controller *c) {
 }
 
 Player::Player(glm::vec2 pos, sf::RenderWindow *window) {
+	/* set entity properties */
+	this->setName("entity_player");
+
+	/* physical properties */
 	this->setPos(pos);
 	this->dragCoeff = 0.75f;
 

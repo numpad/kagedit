@@ -26,6 +26,9 @@ JoystickController::JoystickController(Entity *e, int id) {
 	this->entity = e;
 	this->joystick_id = id;
 }
+JoystickController::~JoystickController() {
+	
+}
 
 void JoystickController::readInput() {
 	if (sf::Joystick::isConnected(this->joystick_id)) {
@@ -34,8 +37,6 @@ void JoystickController::readInput() {
 
 		if (glm::length(axis) > 1.0f)
 			axis = glm::normalize(axis);
-
-		float axis_len_raw = glm::length(axis);
 
 		static float s = 1.0f, b = 0.0f, c = 1.0f, d = 1.0f;
 		static int exp = 4;

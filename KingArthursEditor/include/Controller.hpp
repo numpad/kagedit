@@ -9,9 +9,13 @@ protected:
 	
 public:
 
+	virtual ~Controller() =0;
+
 	virtual void readInput() =0;
 	virtual void update(float dt) =0;
 };
+
+inline Controller::~Controller() { }
 
 #endif
 

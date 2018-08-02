@@ -1,6 +1,8 @@
 #ifndef ENTITY_HPP
 #define ENTITY_HPP
 
+#include <string>
+
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/gtx/vector_angle.hpp>
@@ -18,11 +20,13 @@ protected:
 	          acc = glm::vec2(0.0f);
 
 	sf::Sprite sprite;
+	
+	std::string name = "entity";
 
 	/* util */
 	void setTexture(const sf::Texture &texture, glm::vec2 origin = glm::vec2(0.5f));
 	void updatePhysics(float dt_seconds);
-
+	
 	Entity();
 	
 public:
@@ -31,6 +35,10 @@ public:
 
 	/* util */
 	float distanceTo(Entity &other);
+	
+	/* properties */
+	void setName(std::string name);
+	std::string getName();
 
 	/* position */
 	glm::vec2 getPos();

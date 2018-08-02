@@ -1,4 +1,3 @@
-#define __VERSION__ "0.1.0"
 #define SOL_CHECK_ARGUMENTS 1
 
 #include <iostream>
@@ -6,6 +5,8 @@
 #include <vector>
 #include <tuple>
 #include <unordered_map>
+#include <memory>
+
 #include <string.h>
 #include <stdio.h>
 
@@ -50,6 +51,13 @@ extern "C" {
 			luafunc(__VA_ARGS__); \
 	} while (0)
 
+#define CALL_SCRIPTFUNC0(func) \
+	do { \
+		sol::function luafunc = lua[func]; \
+		if (luafunc.get_type() == sol::type::function) \
+			luafunc(); \
+	} while (0)
+
 void handle_events(sf::Window &window, bool render_imgui, sol::state &lua) {
 	sf::Event e;
 	while (window.pollEvent(e)) {
@@ -58,7 +66,7 @@ void handle_events(sf::Window &window, bool render_imgui, sol::state &lua) {
 		
 		switch (e.type) {
 		case sf::Event::Closed:
-			CALL_SCRIPTFUNC("on_close");
+			CALL_SCRIPTFUNC0("on_close");
 			window.close();
 			break;
 		case sf::Event::Resized:
@@ -113,6 +121,7 @@ void handle_events(sf::Window &window, bool render_imgui, sol::state &lua) {
 		case sf::Event::JoystickConnected:
 			CALL_SCRIPTFUNC("on_joystickconnection", e.joystickConnect.joystickId, true);
 			break;
+		default: break;
 		};
 	}
 }
@@ -233,7 +242,7 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 int main(int argc, char *argv[]) {
 #endif
 	bool vsync_enabled = true;
-	sf::RenderWindow window(sf::VideoMode(800, 600), "p.flesh " __VERSION__);
+	sf::RenderWindow window(sf::VideoMode(800, 600), "p.flesh");
 	window.setVerticalSyncEnabled(vsync_enabled);
 
 	/* init imgui */
@@ -254,7 +263,9 @@ int main(int argc, char *argv[]) {
 	loadscripts(lua, script_srcs);
 	sol::function f;
 	
-	world.spawnItem(new ItemGun(glm::vec2(400, 500)));
+	world.spawnItem(new ItemGun(glm::vec2(100, 400)));
+	world.spawnItem(new ItemGun(glm::vec2(100, 450)));
+	world.spawnItem(new ItemGun(glm::vec2(100, 500)));
 	manager.callEvent("on_start");
 	
 	sf::Time dt;
@@ -266,7 +277,7 @@ int main(int argc, char *argv[]) {
 		sf::Time dt = dt_clock.restart();
 		
 		static bool close = false, render_imgui = true, render_imgui_toggle = false;
-		if (close) { window.close(); continue; }
+		if (close) { window.close(); break; }
 		handle_events(window, render_imgui, lua);
 		if (!render_imgui && sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt)) {
 			render_imgui_toggle = true;
@@ -379,13 +390,12 @@ int main(int argc, char *argv[]) {
 
 	for (Script *s : script_srcs) delete s;
 	
+	world.destroy();
+	ImGui::SFML::Shutdown();
 	// dummy, keep sol alive
 	puts("killing SOL NOW <<<");
-	lua.new_usertype<glm::vec3>(
-		"vec3",
-		"new", sol::no_constructor
-	);
-	ImGui::SFML::Shutdown();
-	
+	lua.script("print('last script...')");
+	lua.collect_garbage();
+	puts("lua collected GARBAGE");
 	return 0;
 }

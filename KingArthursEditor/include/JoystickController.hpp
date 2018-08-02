@@ -16,6 +16,7 @@ protected:
 
 public:
 	JoystickController(Entity *e, int id);
+	~JoystickController();
 
 	void readInput();
 	void update(float dt);

@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-std=c++14 -Wall -pedantic -ggdb
+CFLAGS=-std=c++14 -Wall -pedantic -Werror -O0 -ggdb
 INCLUDES=-I KingArthursEditor/include/ -I KingArthursEditor/lib/imgui/ -I KingArthursEditor/lib/linux/SFML-2.5.0/include/ -I KingArthursEditor/lib/linux/sqlite3/include/ -I KingArthursEditor/lib/sol/include/ -I KingArthursEditor/lib/tinydir/include/
 LFLAGS=
 LIBS=-lGL -lsfml-window -lsfml-graphics -lsfml-system -llua

@@ -14,6 +14,8 @@ positions = {
 
 for i=1,#positions do
 	local v = positions[i]
-	items:add(ItemGun.new(v))
+	local item = ItemGun.new(v)
+	item.name = "entity_item$"
+	items:add(item)
 end
 

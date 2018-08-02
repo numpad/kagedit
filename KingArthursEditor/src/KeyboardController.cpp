@@ -20,6 +20,10 @@ KeyboardController::KeyboardController(Entity *e) {
 	mapKey("right", sf::Keyboard::D);
 }
 
+KeyboardController::~KeyboardController() {
+
+}
+
 void KeyboardController::mapKey(const std::string name, const sf::Keyboard::Key key) {
 	this->keymap[name] = key;
 }

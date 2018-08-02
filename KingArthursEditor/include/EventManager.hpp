@@ -18,9 +18,12 @@ class EventManager {
 	std::unordered_map<std::string, std::vector<sol::object>> events;
 
 public:
+	
+	EventManager(const EventManager &other) {
+		puts("eventmanager COPIED");
+	}
 
 	EventManager();
-	EventManager(const EventManager &other);
 	~EventManager();
 
 	std::vector<std::tuple<std::string, size_t>> getList();

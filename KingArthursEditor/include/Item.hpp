@@ -36,7 +36,7 @@ public:
 		puts("[...] item copied");
 	}
 
-	virtual ~Item();
+	~Item();
 
 	/* member access */
 	float getCollectableRadius();
