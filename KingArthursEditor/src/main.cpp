@@ -268,7 +268,7 @@ int main(int argc, char *argv[]) {
 	sf::Clock dt_clock;
 	int asks = 0, asks_count = 10;
 	float dt_sum = 0.0f;
-	
+
 	while (window.isOpen()) {
 		sf::Time dt = dt_clock.restart();
 		
@@ -332,6 +332,10 @@ int main(int argc, char *argv[]) {
 				}
 				if (ImGui::MenuItem("Reset State")) {
 					lua = new_luastate(&window, &world.getCamera(), manager, world.entities, world.items);
+					loadscripts(lua, script_srcs);
+				}
+				if (ImGui::MenuItem("Reload Scripts")) {
+					script_srcs.clear();
 					loadscripts(lua, script_srcs);
 				}
 				ImGui::Separator();
