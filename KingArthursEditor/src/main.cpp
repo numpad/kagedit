@@ -211,7 +211,7 @@ void loadscripts(sol::state &lua, std::vector<Script *> &script_srcs, const char
 	}
 }
 
-sol::state new_luastate(sf::RenderWindow *window, sf::View *camera, EventManager &manager, std::vector<Entity *> &entities, std::vector<Item *> &items) {
+sol::state new_luastate(sf::RenderWindow *window, sf::View *camera, const EventManager *manager, std::vector<Entity *> &entities, std::vector<Item *> &items) {
 	sol::state lua;
 	lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string, sol::lib::os, sol::lib::math, sol::lib::table, sol::lib::package);
 	register_luaapi(lua);
@@ -220,7 +220,7 @@ sol::state new_luastate(sf::RenderWindow *window, sf::View *camera, EventManager
 	/* register __pointers__ table */
 	lua["__pointers__"]["entities"] = &entities;
 	lua["__pointers__"]["items"] = &items;
-	lua["__pointers__"]["events"] = &manager;
+	lua["__pointers__"]["events"] = manager;
 
 	/* run loader script */
 	lua.script_file("assets/scripts/loader.lua");
@@ -257,7 +257,7 @@ int main(int argc, char *argv[]) {
 	world.spawnEntity(player);
 
 	/* open lua state, load init script */
-	EventManager manager;
+	EventManager *manager = new EventManager();
 	sol::state lua = new_luastate(&window, &world.getCamera(), manager, world.entities, world.items);
 	std::vector<Script *> script_srcs;
 	loadscripts(lua, script_srcs);
@@ -266,7 +266,7 @@ int main(int argc, char *argv[]) {
 	world.spawnItem(new ItemGun(glm::vec2(100, 400)));
 	world.spawnItem(new ItemGun(glm::vec2(100, 450)));
 	world.spawnItem(new ItemGun(glm::vec2(100, 500)));
-	manager.callEvent("on_start");
+	manager->callEvent("on_start");
 	
 	sf::Time dt;
 	sf::Clock dt_clock;
@@ -391,6 +391,7 @@ int main(int argc, char *argv[]) {
 	for (Script *s : script_srcs) delete s;
 	
 	world.destroy();
+	delete manager;
 	ImGui::SFML::Shutdown();
 	// dummy, keep sol alive
 	puts("killing SOL NOW <<<");

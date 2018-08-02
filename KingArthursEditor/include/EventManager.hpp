@@ -21,6 +21,7 @@ public:
 	
 	EventManager(const EventManager &other) {
 		puts("eventmanager COPIED");
+		this->events = other.events;
 	}
 
 	EventManager();
