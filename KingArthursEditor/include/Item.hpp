@@ -6,18 +6,20 @@
 #include <glm/glm.hpp>
 #include <SFML/Graphics.hpp>
 #include <sol.hpp>
-
 #include "Entity.hpp"
 
 class Item : public Entity {
 private:
 	float bgshape_radius = 17.0f,
 		  bgshape_radius_extra = 0.0f;
-	sf::CircleShape bgshape;
+
+	/* TODO: handle resources in a resource manager, keep one texture in there and reference it */
+	sf::Texture hightlight_texture;
+	sf::Sprite highlight;
 
 	float animation_time = 0.0f,
-		  animation_timestep = 2.25f;
-	float animation_radius_max = 3.0f;
+		  animation_timestep = 0.025f;
+	
 	void animate(float dt_seconds);
 
 protected:

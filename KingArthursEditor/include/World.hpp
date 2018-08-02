@@ -27,7 +27,6 @@ extern "C" {
 class World {
 	sf::RenderWindow &window;
 	sf::View camera;
-
 	
 public:
 	std::vector<Item *> items;

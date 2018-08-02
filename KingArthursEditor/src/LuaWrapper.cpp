@@ -77,6 +77,7 @@ void LuaWrapper::REGISTER_EVENTMANAGER(sol::state &lua) {
 		"EventManager",
 		"new", sol::no_constructor,
 		"add", &EventManager::addEvent,
+		"set", [](EventManager &em, const std::string &name, sol::object func){ em.clearEvents(name); em.addEvent(name, func); },
 		"delete", &EventManager::deleteEvent,
 		"clear", &EventManager::clearEvents,
 		"get", &EventManager::getEvents,
@@ -131,7 +132,8 @@ void LuaWrapper::REGISTER(sol::state *lua, sf::RenderWindow *window, sf::View *c
 		"angle",							[](const glm::vec2 &v){ return glm::orientedAngle(v, glm::vec2(1.0f, 0.0f)); },
 		"length",							[](const glm::vec2 &v){ return glm::length(v); },
 		"dot",								[](const glm::vec2 &a, const glm::vec2 &b){ return glm::dot(a, b); },
-		"normalize",						[](const glm::vec2 &v){ return glm::normalize(v); }
+		"normalize",						[](const glm::vec2 &v){ return glm::normalize(v); },
+		"rotate",							[](const glm::vec2 &v, float radians){ return glm::rotate(v, radians); }
 	);
 		
 	LuaWrapper::lua->create_named_table("input",
