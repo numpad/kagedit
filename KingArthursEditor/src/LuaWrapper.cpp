@@ -1,12 +1,12 @@
-#include "LuaInputWrapper.hpp"
+#include "LuaWrapper.hpp"
 
 /* static */
-sol::state *LuaInputWrapper::lua = NULL;
-sf::RenderWindow *LuaInputWrapper::window = NULL;
-sf::View *LuaInputWrapper::camera = NULL;
+sol::state *LuaWrapper::lua = NULL;
+sf::RenderWindow *LuaWrapper::window = NULL;
+sf::View *LuaWrapper::camera = NULL;
 
 
-void LuaInputWrapper::REGISTER_PLAYER(sol::state *lua) {
+void LuaWrapper::REGISTER_PLAYER(sol::state *lua) {
 	lua->new_usertype<Entity>(
 		"Entity",
 		/* entity base class */
@@ -35,11 +35,12 @@ void LuaInputWrapper::REGISTER_PLAYER(sol::state *lua) {
 
 	lua->new_usertype<Player>(
 		"Player",
-		sol::base_classes, sol::bases<Entity>()
+		sol::base_classes, sol::bases<Entity>(),
+		"new", sol::factories([](glm::vec2 pos){ return new Player(pos, LuaWrapper::window); })
 	);
 }
 
-void LuaInputWrapper::REGISTER_ITEMS(sol::state *lua) {
+void LuaWrapper::REGISTER_ITEMS(sol::state *lua) {
 	lua->new_usertype<Item>(
 		"Item",
 		sol::base_classes, sol::bases<Entity>(),
@@ -58,7 +59,7 @@ static T *luaapi_ptrcast(void *d) {
 	return (T *)d;
 }
 
-void LuaInputWrapper::REGISTER_CASTS(sol::state &lua) {
+void LuaWrapper::REGISTER_CASTS(sol::state &lua) {
 	lua.create_named_table("__pointers__");
 	lua["__pointers__"]["typecast"] = lua.create_table_with(
 		"toEntity",			&luaapi_ptrcast<Entity>,
@@ -68,7 +69,7 @@ void LuaInputWrapper::REGISTER_CASTS(sol::state &lua) {
 
 }
 
-void LuaInputWrapper::REGISTER_EVENTMANAGER(sol::state &lua) {
+void LuaWrapper::REGISTER_EVENTMANAGER(sol::state &lua) {
 	lua.new_usertype<EventManager>(
 		"EventManager",
 		"new", sol::no_constructor,
@@ -81,10 +82,10 @@ void LuaInputWrapper::REGISTER_EVENTMANAGER(sol::state &lua) {
 	);
 }
 
-void LuaInputWrapper::REGISTER(sol::state *lua, sf::RenderWindow *window, sf::View *camera) {
-	LuaInputWrapper::lua = lua;
-	LuaInputWrapper::window = window;
-	LuaInputWrapper::camera = camera;
+void LuaWrapper::REGISTER(sol::state *lua, sf::RenderWindow *window, sf::View *camera) {
+	LuaWrapper::lua = lua;
+	LuaWrapper::window = window;
+	LuaWrapper::camera = camera;
 
 	/* register glm::vec2 */
 	auto glm_vec2_add_overload = sol::overload(
@@ -112,7 +113,7 @@ void LuaInputWrapper::REGISTER(sol::state *lua, sf::RenderWindow *window, sf::Vi
 		[](const glm::vec2 &v, const char *str){ std::ostringstream oss; oss << "(" << v.x << ", " << v.y << ")" << str; return oss.str(); }
 	);
 
-	LuaInputWrapper::lua->new_usertype<glm::vec2>(
+	LuaWrapper::lua->new_usertype<glm::vec2>(
 		"vec2",
 		sol::constructors<glm::vec2(), glm::vec2(float), glm::vec2(float, float)>(),
 		"x", &glm::vec2::x,
@@ -130,7 +131,7 @@ void LuaInputWrapper::REGISTER(sol::state *lua, sf::RenderWindow *window, sf::Vi
 		"normalize",						[](const glm::vec2 &v){ return glm::normalize(v); }
 	);
 		
-	LuaInputWrapper::lua->create_named_table("input",
+	LuaWrapper::lua->create_named_table("input",
 		"getMousePosition", [window](){ sf::Vector2i mp = sf::Mouse::getPosition(*window); return glm::vec2((float)mp.x, (float)mp.y); },
 		"getMouseButton", [](const char *key){
 			if (key == nullptr) return sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
@@ -150,7 +151,7 @@ void LuaInputWrapper::REGISTER(sol::state *lua, sf::RenderWindow *window, sf::Vi
 	auto cam_setsize = [](sf::View &camera, const glm::vec2 &s){ camera.setSize(s.x, s.y); };
 	auto cam_getrot = [](const sf::View &camera){ return camera.getRotation(); };
 	auto cam_setrot = [](sf::View &camera, float rad){ camera.setRotation(glm::degrees(rad)); };
-	LuaInputWrapper::lua->new_usertype<sf::View>(
+	LuaWrapper::lua->new_usertype<sf::View>(
 		"Camera",
 		sol::constructors<sf::View()>(),
 		"pos", sol::property(cam_getpos, cam_setpos),
@@ -166,15 +167,15 @@ void LuaInputWrapper::REGISTER(sol::state *lua, sf::RenderWindow *window, sf::Vi
 		"rotate", [](sf::View &camera, float rad){ camera.rotate(glm::degrees(rad)); },
 		"zoom", [](sf::View &camera, float f){ camera.zoom(f); }
 	);
-	LuaInputWrapper::lua->set("camera", camera);
+	LuaWrapper::lua->set("camera", camera);
 
-	LuaInputWrapper::REGISTER_PLAYER(lua);
-	LuaInputWrapper::REGISTER_ITEMS(lua);
-	LuaInputWrapper::REGISTER_CASTS(*lua);
-	LuaInputWrapper::REGISTER_EVENTMANAGER(*lua);
+	LuaWrapper::REGISTER_PLAYER(lua);
+	LuaWrapper::REGISTER_ITEMS(lua);
+	LuaWrapper::REGISTER_CASTS(*lua);
+	LuaWrapper::REGISTER_EVENTMANAGER(*lua);
 }
 
-glm::vec2 LuaInputWrapper::getMousePosition() {
+glm::vec2 LuaWrapper::getMousePosition() {
 	sf::Vector2i mouse = sf::Mouse::getPosition(*window);
 	return glm::vec2((float)mouse.x, (float)mouse.y);
 }

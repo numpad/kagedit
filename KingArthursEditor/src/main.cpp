@@ -37,7 +37,7 @@ extern "C" {
 #include "World.hpp"
 
 #include "Script.hpp"
-#include "LuaInputWrapper.hpp"
+#include "LuaWrapper.hpp"
 #include "EventManager.hpp"
 
 #if !defined(_WIN32)
@@ -215,7 +215,7 @@ sol::state new_luastate(sf::RenderWindow *window, sf::View *camera, const EventM
 	sol::state lua;
 	lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string, sol::lib::os, sol::lib::math, sol::lib::table, sol::lib::package);
 	register_luaapi(lua);
-	LuaInputWrapper::REGISTER(&lua, window, camera);
+	LuaWrapper::REGISTER(&lua, window, camera);
 
 	/* register __pointers__ table */
 	lua["__pointers__"]["entities"] = &entities;
@@ -231,10 +231,6 @@ sol::state new_luastate(sf::RenderWindow *window, sf::View *camera, const EventM
 #if defined(_WIN32)
 #include <Windows.h>
 #endif
-
-Entity &luaapi_deref(Entity *t) {
-	return *t;
-}
 
 #if defined(_WIN32) && !defined(_DEBUG)
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {

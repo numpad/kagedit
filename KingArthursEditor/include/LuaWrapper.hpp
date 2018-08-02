@@ -1,5 +1,5 @@
-#ifndef LUAINPUTWRAPPER_HPP
-#define LUAINPUTWRAPPER_HPP
+#ifndef LUAWRAPPER_HPP
+#define LUAWRAPPER_HPP
 
 #include <sol.hpp>
 
@@ -18,7 +18,7 @@
 
 #include "EventManager.hpp"
 
-class LuaInputWrapper {
+class LuaWrapper {
 
 	static void REGISTER_PLAYER(sol::state *lua);
 	static void REGISTER_ITEMS(sol::state *lua);
