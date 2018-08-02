@@ -41,6 +41,7 @@ void Entity::updatePhysics(float dt_seconds) {
 
 Entity::Entity() {
 	printf("[!!!] entity init\n");
+	this->events = new EventManager();
 }
 
 
@@ -49,7 +50,9 @@ Entity::Entity() {
 \******************/
 
 Entity::~Entity() {
+	this->events->callEvent("on_destroy");
 	printf("[!!!] destructing entity:%s %g,%g\n", this->name.c_str(), this->pos.x, this->pos.y);
+	delete this->events;
 }
 
 float Entity::distanceTo(Entity &other) {
@@ -62,6 +65,10 @@ void Entity::setName(std::string name) {
 
 std::string Entity::getName() {
 	return this->name;
+}
+
+EventManager &Entity::getEvents() {
+	return *(this->events);
 }
 
 glm::vec2 Entity::getPos() {
@@ -146,6 +153,7 @@ void Entity::setViewDirection(glm::vec2 target_dir) {
  * @param dt Delta Time for variable timestep, in Seconds.
  */
 void Entity::update(float dt) {
+	this->events->callEvent("on_update", dt);
 	this->updatePhysics(dt);
 }
 

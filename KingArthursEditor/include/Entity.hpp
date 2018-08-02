@@ -8,6 +8,8 @@
 #include <glm/gtx/vector_angle.hpp>
 #include <SFML/Graphics.hpp>
 
+#include "EventManager.hpp"
+
 class Entity {
 private:
 	glm::vec2 view_dir = glm::vec2(1.0f, 0.0f);
@@ -23,6 +25,8 @@ protected:
 	
 	std::string name = "entity";
 
+	EventManager *events;
+
 	/* util */
 	void setTexture(const sf::Texture &texture, glm::vec2 origin = glm::vec2(0.5f));
 	void updatePhysics(float dt_seconds);
@@ -30,7 +34,7 @@ protected:
 	Entity();
 	
 public:
-	
+
 	virtual ~Entity();
 
 	/* util */
@@ -39,6 +43,7 @@ public:
 	/* properties */
 	void setName(std::string name);
 	std::string getName();
+	EventManager &getEvents();
 
 	/* position */
 	glm::vec2 getPos();

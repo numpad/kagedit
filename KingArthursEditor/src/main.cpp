@@ -365,7 +365,7 @@ int main(int argc, char *argv[]) {
 		glm::vec2 stick_right = get_axis(0, sf::Joystick::Axis::Z, sf::Joystick::Axis::R);
 		player->setViewDirection(stick_right);
 	
-		world.update(dt.asSeconds(), lua);
+		world.update(dt.asSeconds());
 		
 		/* render */
 		window.clear(sf::Color(33, 33, 33));

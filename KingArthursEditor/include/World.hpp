@@ -46,7 +46,7 @@ public:
 
 	sf::View &getCamera();
 
-	void update(float dt, sol::state &lua);
+	void update(float dt);
 	void render();
 };
 

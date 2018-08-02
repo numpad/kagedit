@@ -1,0 +1,9 @@
+Events Documentation:
+
+Entity:
+  on_update(float deltatime)			-- every update (tick)
+  on_destroy()					-- on destruction
+  on_collect(Item *collected)			-- collecting item, can deny by setting Item::collected = false
+						   called before Item::on_collected
+  Item:
+    on_collected(Entity *collected_by)		-- on collected by entity, can deny collection (see Entity::on_collect)

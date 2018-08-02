@@ -45,7 +45,7 @@ sf::View &World::getCamera() {
 	return this->camera;
 }
 
-void World::update(float dt, sol::state &lua) {
+void World::update(float dt) {
 	this->removeCollectedItems();
 
 	for (auto it = entities.begin(); it != entities.end(); ++it) {
@@ -54,7 +54,7 @@ void World::update(float dt, sol::state &lua) {
 		for (auto item_it = items.begin(); item_it != items.end(); ++item_it) {
 			Item *item = *item_it;
 			if (!item->isCollected() && item->isCollectableBy(*entity)) {
-				item->onEntityNear(*entity, lua);
+				item->onEntityNear(*entity);
 			}
 		}
 	}

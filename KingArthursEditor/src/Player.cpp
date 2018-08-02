@@ -6,7 +6,8 @@ void Player::setController(Controller *c) {
 	}
 	this->controllers.clear();
 	
-	this->addController(c);
+	if (c != nullptr)
+		this->addController(c);
 }
 
 void Player::addController(Controller *c) {
@@ -46,6 +47,6 @@ void Player::update(float dt) {
 		controllers.at(i)->update(dt);
 	}
 
-	this->updatePhysics(dt);
+	Entity::update(dt);
 }
 

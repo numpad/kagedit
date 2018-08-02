@@ -41,16 +41,14 @@ void Item::setCollected(bool collected) {
 	this->collected = collected;
 }
 
-void Item::onEntityNear(Entity &entity, sol::state &lua) {
+void Item::onEntityNear(Entity &entity) {
 	glm::vec2 to_entity = entity.getPos() - this->getPos();
 	float dist = glm::length(to_entity);
 	float move_vel = dist / 10.0f;
 
-	if (dist < 2.0f) {
+	if (dist < this->collectInRadius) {
 		move_vel = 1.0f;
-		this->setCollected();
-		//entity.onCollect(*this);
-		this->onPickup(entity, lua);
+		this->onPickup(entity);
 	} else {
 		to_entity = glm::normalize(to_entity);
 	}
@@ -58,19 +56,24 @@ void Item::onEntityNear(Entity &entity, sol::state &lua) {
 	this->setVel(to_entity * move_vel);
 }
 
-void Item::onPickup(Entity &entity, sol::state &lua) {
+void Item::onPickup(Entity &entity) {
+	this->setCollected();
+
 	// execute on pickup script
-	lua.script(this->script_src);
+	entity.getEvents().callEvent("on_collect", this);
+	/* check again, maybe the entity script denied pickup */
+	if (this->isCollected())
+		this->events->callEvent("on_collected", &entity);
 }
 
 void Item::update(float dt_seconds) {
 	this->animate(dt_seconds);
-	this->updatePhysics(dt_seconds);
-	this->bgshape.setPosition(this->getPos().x, this->getPos().y);
-	this->sprite.setPosition(this->getPos().x, this->getPos().y);
+	Entity::update(dt_seconds);
 }
 
 void Item::draw(sf::RenderTarget &target) {
+	this->bgshape.setPosition(this->getPos().x, this->getPos().y);
+	this->sprite.setPosition(this->getPos().x, this->getPos().y);
 	target.draw(this->bgshape);
 	target.draw(this->sprite);
 }

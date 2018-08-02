@@ -34,29 +34,21 @@ public:
 	int addEvent(std::string event_name, sol::object func);
 	void deleteEvent(std::string event_name, int index);
 
-	void callEventFromLua(std::string event_name, sol::variadic_args args) {
-		auto search = this->events.find(event_name);
-		if (search == this->events.end()) {
-			return;
-		}
-
-		std::vector<sol::object> &funcs = search->second;
-		for (auto it = funcs.begin(); it != funcs.end(); ++it) {
-			((sol::function)*it).call(args);
-		}
-	}
+	void callEventFromLua(std::string event_name, sol::variadic_args args);
 
 	template <class... Args>
-	void callEvent(std::string event_name, Args&&... args) {
+	bool callEvent(std::string event_name, Args&&... args) {
 		auto search = this->events.find(event_name);
 		if (search == this->events.end()) {
-			return;
+			return false;
 		}
 
 		std::vector<sol::object> &funcs = search->second;
 		for (auto it = funcs.begin(); it != funcs.end(); ++it) {
 			((sol::function)*it).call(std::forward<Args>(args)...);
 		}
+
+		return !funcs.empty();
 	}
 
 };

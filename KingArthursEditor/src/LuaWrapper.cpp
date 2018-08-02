@@ -10,12 +10,14 @@ void LuaWrapper::REGISTER_PLAYER(sol::state *lua) {
 	lua->new_usertype<Entity>(
 		"Entity",
 		/* entity base class */
+		"events", sol::property(&Entity::getEvents),
 		"name", sol::property(&Entity::setName, &Entity::getName),
 		"pos", sol::property(&Entity::setPos, &Entity::getPos),
 		"vel", sol::property(&Entity::setVel, &Entity::getVel),
 		"acc", sol::property(&Entity::setAcc, &Entity::getAcc),
 		"new", sol::no_constructor,
 		"distanceTo", &Entity::distanceTo,
+		"pickup", [](Entity &e, Item *i){ i->onPickup(e); },
 		"getName", &Entity::getName,
 		"setName", &Entity::setName,
 		"getPos", &Entity::getPos,
@@ -44,7 +46,8 @@ void LuaWrapper::REGISTER_ITEMS(sol::state *lua) {
 	lua->new_usertype<Item>(
 		"Item",
 		sol::base_classes, sol::bases<Entity>(),
-		"new", sol::no_constructor
+		"new", sol::no_constructor,
+		"collected", sol::property(&Item::setCollected, &Item::isCollected)
 	);
 
 	lua->new_usertype<ItemGun>(

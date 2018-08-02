@@ -11,7 +11,6 @@
 
 class Item : public Entity {
 private:
-	sf::Sprite sprite;
 	float bgshape_radius = 17.0f,
 		  bgshape_radius_extra = 0.0f;
 	sf::CircleShape bgshape;
@@ -25,8 +24,6 @@ protected:
 	float collectableMagneticRadius = 45.0f;
 	float collectInRadius = 14.0f;
 	bool collected = false;
-
-	std::string script_src = "print('item collected')";
 
 	Item();
 
@@ -45,8 +42,8 @@ public:
 	void setCollected(bool collected = true);
 
 	/* called on specific events */
-	void onEntityNear(Entity &entity, sol::state &lua);
-	void onPickup(Entity &entity, sol::state &lua);
+	void onEntityNear(Entity &entity);
+	void onPickup(Entity &entity);
 
 	/* update/render */
 	void update(float dt_seconds);

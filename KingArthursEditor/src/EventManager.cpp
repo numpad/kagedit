@@ -54,3 +54,15 @@ void EventManager::deleteEvent(std::string event_name, int index) {
 	search->second.erase(search->second.begin() + index);
 }
 
+void EventManager::callEventFromLua(std::string event_name, sol::variadic_args args) {
+	auto search = this->events.find(event_name);
+	if (search == this->events.end()) {
+		return;
+	}
+
+	std::vector<sol::object> &funcs = search->second;
+	for (auto it = funcs.begin(); it != funcs.end(); ++it) {
+		((sol::function)*it).call(args);
+	}
+}
+
