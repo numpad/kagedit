@@ -30,8 +30,10 @@ void Entity::updatePhysics(float dt_seconds) {
 		this->acc += drag;
 	*/
 
-	if (this->events->callEvent("updatephysics"))
+	/* quit early if at least one event exists  */
+	if (this->events->callEvent("updatephysics", dt_seconds))
 		return;
+
 	/* calculate new position TODO: */
 	this->vel += this->acc * (dt_seconds * 60.0f);
 	this->pos += this->vel * (dt_seconds * 60.0f);
