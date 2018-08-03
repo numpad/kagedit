@@ -180,8 +180,12 @@ void LuaWrapper::REGISTER(sol::state *lua, sf::RenderWindow *window, sf::View *c
 		"move", [](sf::View &camera, const glm::vec2 &d){ camera.move(d.x, d.y); },
 		"rotate", [](sf::View &camera, float rad){ camera.rotate(glm::degrees(rad)); },
 		"zoom", [](sf::View &camera, float f){ camera.zoom(f); },
-		"toWorldSpace", [window](const sf::View &view, const glm::vec2 &p){
+		"toWorldspace", [window](const sf::View &view, const glm::vec2 &p){
 			sf::Vector2f coords = window->mapPixelToCoords(sf::Vector2i((int)p.x, (int)p.y), view);
+			return glm::vec2(coords.x, coords.y);
+		},
+		"toScreenspace", [window](const sf::View &view, const glm::vec2 &p){
+			sf::Vector2i coords = window->mapCoordsToPixel(sf::Vector2f(p.x, p.y), view);
 			return glm::vec2(coords.x, coords.y);
 		}
 	);

@@ -44,21 +44,7 @@ extern "C" {
 #define sprintf_s sprintf
 #endif
 
-#define CALL_SCRIPTFUNC(func, ...) \
-	do { \
-		sol::function luafunc = lua[func]; \
-		if (luafunc.get_type() == sol::type::function) \
-			luafunc(__VA_ARGS__); \
-	} while (0)
-
-#define CALL_SCRIPTFUNC0(func) \
-	do { \
-		sol::function luafunc = lua[func]; \
-		if (luafunc.get_type() == sol::type::function) \
-			luafunc(); \
-	} while (0)
-
-void handle_events(sf::Window &window, bool render_imgui, sol::state &lua) {
+void handle_events(sf::Window &window, bool render_imgui, EventManager *manager) {
 	sf::Event e;
 	while (window.pollEvent(e)) {
 		if (render_imgui)
@@ -66,23 +52,23 @@ void handle_events(sf::Window &window, bool render_imgui, sol::state &lua) {
 		
 		switch (e.type) {
 		case sf::Event::Closed:
-			CALL_SCRIPTFUNC0("on_close");
+			manager->callEvent("on_close");
 			window.close();
 			break;
 		case sf::Event::Resized:
-			CALL_SCRIPTFUNC("on_resize", e.size.width, e.size.height);
+			manager->callEvent("on_resize", e.size.width, e.size.height);
 			break;
 		case sf::Event::LostFocus:
-			CALL_SCRIPTFUNC("on_focuschange", false);
+			manager->callEvent("on_focuschange", false);
 			break;
 		case sf::Event::GainedFocus:
-			CALL_SCRIPTFUNC("on_focuschange", true);
+			manager->callEvent("on_focuschange", true);
 			break;
 		case sf::Event::MouseWheelScrolled:
-			CALL_SCRIPTFUNC("on_mousescroll", e.mouseWheelScroll.delta, e.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel);
+			manager->callEvent("on_mousescroll", e.mouseWheelScroll.delta, e.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel);
 			break;
 		case sf::Event::MouseMoved:
-			CALL_SCRIPTFUNC("on_mousemove", e.mouseMove.x, e.mouseMove.y);
+			manager->callEvent("on_mousemove", e.mouseMove.x, e.mouseMove.y);
 			break;
 		case sf::Event::MouseButtonPressed: {
 			const char *t;
@@ -95,7 +81,7 @@ void handle_events(sf::Window &window, bool render_imgui, sol::state &lua) {
 				case sf::Mouse::XButton2:	t = "x2";		break;
 				default: t = ""; break;
 			};
-			CALL_SCRIPTFUNC("on_mousebutton", e.mouseButton.x, e.mouseButton.y, t, true);
+			manager->callEvent("on_mousebutton", e.mouseButton.x, e.mouseButton.y, t, true);
 			break;
 		}
 		case sf::Event::MouseButtonReleased: {
@@ -109,17 +95,17 @@ void handle_events(sf::Window &window, bool render_imgui, sol::state &lua) {
 			case sf::Mouse::XButton2:	t = "x2";		break;
 			default: t = ""; break;
 			};
-			CALL_SCRIPTFUNC("on_mousebutton", e.mouseButton.x, e.mouseButton.y, t, false);
+			manager->callEvent("on_mousebutton", e.mouseButton.x, e.mouseButton.y, t, false);
 			break;
 		}
 		case sf::Event::MouseEntered:
-			CALL_SCRIPTFUNC("on_mousefocuschange", true);
+			manager->callEvent("on_mousefocuschange", true);
 			break;
 		case sf::Event::MouseLeft:
-			CALL_SCRIPTFUNC("on_mousefocuschange", false);
+			manager->callEvent("on_mousefocuschange", false);
 			break;
 		case sf::Event::JoystickConnected:
-			CALL_SCRIPTFUNC("on_joystickconnection", e.joystickConnect.joystickId, true);
+			manager->callEvent("on_joystickconnection", e.joystickConnect.joystickId, true);
 			break;
 		default: break;
 		};
@@ -274,7 +260,7 @@ int main(int argc, char *argv[]) {
 		
 		static bool close = false, render_imgui = true, render_imgui_toggle = false;
 		if (close) { window.close(); break; }
-		handle_events(window, render_imgui, lua);
+		handle_events(window, render_imgui, manager);
 		if (!render_imgui && sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt)) {
 			render_imgui_toggle = true;
 		}

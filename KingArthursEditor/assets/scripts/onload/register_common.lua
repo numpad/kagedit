@@ -1,6 +1,8 @@
 -- register common functions / variables
-entities = __pointers__.entities
-items = __pointers__.items
+
+for k, v in pairs(__pointers__) do
+	_G[k] = v
+end
+
 player = entities:at(1)
-events = __pointers__.events
 
