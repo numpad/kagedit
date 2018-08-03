@@ -86,6 +86,15 @@ void LuaWrapper::REGISTER_EVENTMANAGER(sol::state &lua) {
 	);
 }
 
+extern lua_State *lState;
+extern void LoadImguiBindings();
+
+void LuaWrapper::REGISTER_IMGUI(sol::state &lua) {
+	static lua_State *L = sol::state_view(lua);
+	lState = L;
+	LoadImguiBindings();
+}
+
 void LuaWrapper::REGISTER(sol::state *lua, sf::RenderWindow *window, sf::View *camera) {
 	LuaWrapper::lua = lua;
 	LuaWrapper::window = window;
@@ -170,7 +179,11 @@ void LuaWrapper::REGISTER(sol::state *lua, sf::RenderWindow *window, sf::View *c
 		"setRotation", cam_setrot,
 		"move", [](sf::View &camera, const glm::vec2 &d){ camera.move(d.x, d.y); },
 		"rotate", [](sf::View &camera, float rad){ camera.rotate(glm::degrees(rad)); },
-		"zoom", [](sf::View &camera, float f){ camera.zoom(f); }
+		"zoom", [](sf::View &camera, float f){ camera.zoom(f); },
+		"toWorldSpace", [window](const sf::View &view, const glm::vec2 &p){
+			sf::Vector2f coords = window->mapPixelToCoords(sf::Vector2i((int)p.x, (int)p.y), view);
+			return glm::vec2(coords.x, coords.y);
+		}
 	);
 	LuaWrapper::lua->set("camera", camera);
 
@@ -178,6 +191,7 @@ void LuaWrapper::REGISTER(sol::state *lua, sf::RenderWindow *window, sf::View *c
 	LuaWrapper::REGISTER_ITEMS(lua);
 	LuaWrapper::REGISTER_CASTS(*lua);
 	LuaWrapper::REGISTER_EVENTMANAGER(*lua);
+	LuaWrapper::REGISTER_IMGUI(*lua);
 }
 
 glm::vec2 LuaWrapper::getMousePosition() {

@@ -11,6 +11,8 @@
 #include <string>
 #include <sstream>
 
+#include <imgui.h>
+
 #include "Entity.hpp"
 #include "Player.hpp"
 
@@ -25,6 +27,7 @@ class LuaWrapper {
 	static void REGISTER_ITEMS(sol::state *lua);
 	static void REGISTER_CASTS(sol::state &lua);
 	static void REGISTER_EVENTMANAGER(sol::state &lua);
+	static void REGISTER_IMGUI(sol::state &lua);
 
 public:
 	static sol::state *lua;
