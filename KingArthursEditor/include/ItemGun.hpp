@@ -7,9 +7,11 @@
 #include "Entity.hpp"
 #include "Item.hpp"
 
+#include "AssetManager.hpp"
+
 class ItemGun : public Item {
 private:
-	sf::Texture gun_texture;
+	sf::Texture *gun_texture;
 
 public:
 	

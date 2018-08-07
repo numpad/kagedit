@@ -77,7 +77,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\SFML-2.5.0\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\imgui;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\thor\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\thor\extlibs\aurora\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\sqlite3\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\glm\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\lua\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\sol\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\tinydir\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\SFML-2.5.0\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\imgui;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\thor\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\thor\extlibs\aurora\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\sqlite3\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\glm\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\lua\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\sol\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\tinydir\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\imgui_lua_bindings\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -106,7 +106,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\SFML-2.5.0\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\imgui;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\thor\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\thor\extlibs\aurora\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\sqlite3\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\glm\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\lua\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\sol\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\tinydir\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\SFML-2.5.0\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\imgui;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\thor\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\thor\extlibs\aurora\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\sqlite3\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\glm\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\windows\lua\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\sol\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\tinydir\include;C:\Users\Chris\source\repos\KingArthursEditor\KingArthursEditor\lib\imgui_lua_bindings\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -137,8 +137,11 @@
     <ClCompile Include="lib\imgui\imgui.cpp" />
     <ClCompile Include="lib\imgui\imgui_draw.cpp" />
     <ClCompile Include="lib\imgui\imgui_impl.cpp" />
+    <ClCompile Include="lib\imgui_lua_bindings\imgui_lua_bindings.cpp" />
+    <ClCompile Include="src\AssetManager.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\EventManager.cpp" />
+    <ClCompile Include="src\Filesystem.cpp" />
     <ClCompile Include="src\Item.cpp" />
     <ClCompile Include="src\ItemGun.cpp" />
     <ClCompile Include="src\JoystickController.cpp" />
@@ -148,12 +151,15 @@
     <ClCompile Include="src\MouseController.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Script.cpp" />
+    <ClCompile Include="src\TileMap.cpp" />
     <ClCompile Include="src\World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\AssetManager.hpp" />
     <ClInclude Include="include\Controller.hpp" />
     <ClInclude Include="include\Entity.hpp" />
     <ClInclude Include="include\EventManager.hpp" />
+    <ClInclude Include="include\Filesystem.hpp" />
     <ClInclude Include="include\Item.hpp" />
     <ClInclude Include="include\ItemGun.hpp" />
     <ClInclude Include="include\JoystickController.hpp" />
@@ -162,6 +168,7 @@
     <ClInclude Include="include\MouseController.hpp" />
     <ClInclude Include="include\Player.hpp" />
     <ClInclude Include="include\Script.hpp" />
+    <ClInclude Include="include\TileMap.hpp" />
     <ClInclude Include="include\World.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

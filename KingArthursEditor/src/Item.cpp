@@ -4,21 +4,15 @@ void Item::animate(float dt_seconds) {
 	this->sprite.rotate(0.975f);
 	float scale = cosf(this->animation_time += this->animation_timestep) / 10.0f + 1.0f;
 	this->highlight.setScale(scale, scale);
-	/*
-	this->bgshape_radius_extra = sinf(this->animation_time) * this->animation_radius_max;
-	this->bgshape.setRadius(this->bgshape_radius + this->bgshape_radius_extra);
-	this->bgshape.setOrigin(sf::Vector2f(this->bgshape_radius + this->bgshape_radius_extra, this->bgshape_radius + this->bgshape_radius_extra));
-	this->animation_time += this->animation_timestep * dt_seconds;
-	*/
 }
 
 Item::Item() {
 	this->setName("entity_item");
-	assert(this->hightlight_texture.loadFromFile("assets/images/effects/item_highlight.png"));
-	
-	this->hightlight_texture.setSmooth(true);
-	this->highlight.setTexture(this->hightlight_texture);
-	sf::Vector2f center(this->hightlight_texture.getSize().x * 0.5f, this->hightlight_texture.getSize().y * 0.5f);
+	this->hightlight_texture = AssetManager::load("assets/images/effects/item_highlight.png");
+
+	this->hightlight_texture->setSmooth(true);
+	this->highlight.setTexture(*this->hightlight_texture);
+	sf::Vector2f center(this->hightlight_texture->getSize().x * 0.5f, this->hightlight_texture->getSize().y * 0.5f);
 	this->highlight.setOrigin(center);
 }
 

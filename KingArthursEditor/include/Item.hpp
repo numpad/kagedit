@@ -8,13 +8,15 @@
 #include <sol.hpp>
 #include "Entity.hpp"
 
+#include "AssetManager.hpp"
+
 class Item : public Entity {
 private:
 	float bgshape_radius = 17.0f,
 		  bgshape_radius_extra = 0.0f;
 
 	/* TODO: handle resources in a resource manager, keep one texture in there and reference it */
-	sf::Texture hightlight_texture;
+	sf::Texture *hightlight_texture;
 	sf::Sprite highlight;
 
 	float animation_time = 0.0f,

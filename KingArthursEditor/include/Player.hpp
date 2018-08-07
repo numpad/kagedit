@@ -16,8 +16,10 @@
 #include "MouseController.hpp"
 #include "JoystickController.hpp"
 
+#include "AssetManager.hpp"
+
 class Player : public Entity {
-	sf::Texture skin_stand, skin_gun;
+	sf::Texture *skin_stand, *skin_gun;
 	
 	std::vector<Controller *> controllers;
 

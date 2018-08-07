@@ -1,15 +1,11 @@
 return {
-  version = "1.1",
   luaversion = "5.1",
-  tiledversion = "1.1.6",
-  orientation = "orthogonal",
   renderorder = "right-down",
   width = 64,
   height = 64,
   tilewidth = 64,
   tileheight = 64,
   nextobjectid = 1,
-  properties = {},
   tilesets = {
     {
       name = "Kenney Sports",
@@ -19,7 +15,7 @@ return {
       tileheight = 64,
       spacing = 0,
       margin = 0,
-      image = "Tilesheet/groundIce_blue.png",
+      image = "Tilesheet/tileset.png",
       imagewidth = 832,
       imageheight = 1024,
       tileoffset = {

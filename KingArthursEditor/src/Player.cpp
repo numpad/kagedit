@@ -23,13 +23,17 @@ Player::Player(glm::vec2 pos, sf::RenderWindow *window) {
 	this->dragCoeff = 0.75f;
 
 	/* load texture and sprite */
-	assert(this->skin_stand.loadFromFile("assets/images/kenney-topdown/Survivor 1/survivor1_stand.png"));
-	assert(this->skin_gun.loadFromFile("assets/images/kenney-topdown/Survivor 1/survivor1_gun.png"));
-	this->skin_stand.setSmooth(true);
-	this->skin_gun.setSmooth(true);
+	//assert(this->skin_stand.loadFromFile("assets/images/kenney-topdown/Survivor 1/survivor1_stand.png"));
+	//assert(this->skin_gun.loadFromFile("assets/images/kenney-topdown/Survivor 1/survivor1_gun.png"));
+
+	this->skin_stand = AssetManager::load("assets/images/kenney-topdown/Survivor 1/survivor1_stand.png");
+	this->skin_gun   = AssetManager::load("assets/images/kenney-topdown/Survivor 1/survivor1_gun.png");
+
+	this->skin_stand->setSmooth(true);
+	this->skin_gun->setSmooth(true);
 
 	/* center origin */
-	this->setTexture(this->skin_stand);
+	this->setTexture(*this->skin_gun);
 
 	/* controls */
 	this->addController(new KeyboardController(this));

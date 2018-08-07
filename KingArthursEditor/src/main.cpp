@@ -39,6 +39,7 @@ extern "C" {
 #include "Script.hpp"
 #include "LuaWrapper.hpp"
 #include "EventManager.hpp"
+#include "Filesystem.hpp"
 
 #if !defined(_WIN32)
 #define sprintf_s sprintf
@@ -214,6 +215,39 @@ sol::state new_luastate(sf::RenderWindow *window, sf::View *camera, const EventM
 	return lua;
 }
 
+void load_config(sf::VideoMode &vm, bool &vsync_out, int &framerate, sf::Uint32 &style) {
+	sol::state lua;
+	lua.do_file("assets/scripts/config.lua");
+	sol::table window_config = lua["window"];
+
+	/* get config */
+	bool fullscreen = window_config["fullscreen"];
+	sol::object vsync = window_config["framerate"];
+	int width = window_config["width"];
+	int height = window_config["height"];
+	
+	/* set window size */
+	if (fullscreen) {
+		vm = sf::VideoMode::getFullscreenModes()[0];
+		style = sf::Style::Fullscreen;
+	} else {
+		vm.width = width;
+		vm.height = height;
+		style = sf::Style::Default;
+	}
+
+	if (vsync.get_type() == sol::type::string && vsync.as<std::string>() == "vsync") {
+		vsync_out = true;
+		framerate = 0;
+	} else if (vsync.get_type() == sol::type::number && vsync.as<int>() > 0) {
+		vsync_out = false;
+		framerate = vsync.as<int>();
+	} else {
+		vsync_out = false;
+		framerate = 60;
+	}
+}
+
 #if defined(_WIN32)
 #include <Windows.h>
 #endif
@@ -223,9 +257,16 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 #else
 int main(int argc, char *argv[]) {
 #endif
-	bool vsync_enabled = true;
-	sf::RenderWindow window(sf::VideoMode(800, 600), "p.flesh");
-	window.setVerticalSyncEnabled(vsync_enabled);
+	sf::VideoMode vm;
+	sf::Uint32 wstyle;
+	bool vsync_enabled;
+	int framerate;
+	load_config(vm, vsync_enabled, framerate, wstyle);
+
+	sf::RenderWindow window(vm, "p.flesh", wstyle);
+	if (vsync_enabled)		window.setVerticalSyncEnabled(vsync_enabled);
+	else if (framerate > 0)	window.setFramerateLimit(framerate);
+	else					window.setFramerateLimit((framerate = 60));
 
 	/* init imgui */
 	ImGui::CreateContext();
@@ -348,6 +389,14 @@ int main(int argc, char *argv[]) {
 
 				ImGui::EndMenu();
 			}
+
+			if (ImGui::BeginMenu("World")) {
+				if (ImGui::BeginMenu("Load")) {
+
+					ImGui::EndMenu();
+				}
+				ImGui::EndMenu();
+			}
 			ImGui::EndMainMenuBar();
 		}
 		
@@ -381,6 +430,7 @@ int main(int argc, char *argv[]) {
 	ImGui::SFML::Shutdown();
 	// dummy, keep sol alive
 	puts("killing SOL NOW <<<");
+	AssetManager::destroy();
 	lua.script("print('last script...')");
 	lua.collect_garbage();
 	puts("lua collected GARBAGE");
