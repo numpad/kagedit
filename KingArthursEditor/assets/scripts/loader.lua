@@ -16,7 +16,8 @@ __pointers__.events:add('on_start',
 -- execute all onload scripts
 scripts = list_files('scripts/onload/')
 for i = 1, #scripts do
+	print('[loader] Loading \'' .. scripts[i] .. '\'...')
 	dofile('assets/scripts/onload/' .. scripts[i])
 end
 
-print('Loaded ' .. #scripts .. ' script(s)!')
+print('[loader] Finished! Loaded ' .. #scripts .. ' script(s)!')

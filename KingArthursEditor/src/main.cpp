@@ -289,7 +289,7 @@ int main(int argc, char *argv[]) {
 	world.spawnItem(new ItemGun(glm::vec2(100, 400)));
 	world.spawnItem(new ItemGun(glm::vec2(100, 450)));
 	world.spawnItem(new ItemGun(glm::vec2(100, 500)));
-	manager->callEvent("on_start");
+	manager->callEvent("on_load");
 	
 	sf::Time dt;
 	sf::Clock dt_clock;
@@ -407,7 +407,7 @@ int main(int argc, char *argv[]) {
 		world.update(dt.asSeconds());
 		
 		/* render */
-		window.clear(sf::Color(33, 33, 33));
+		window.clear();
 		world.render();
 		
 		/* imgui render */
@@ -423,8 +423,10 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
+	manager->callEvent("on_unload");
+
+	/* cleanup */
 	for (Script *s : script_srcs) delete s;
-	
 	world.destroy();
 	delete manager;
 	ImGui::SFML::Shutdown();

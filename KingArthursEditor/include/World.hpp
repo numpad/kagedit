@@ -24,20 +24,22 @@ extern "C" {
 #include "Player.hpp"
 #include "Item.hpp"
 
+#include "TileMap.hpp"
+
 class World {
 	sf::RenderWindow &window;
 	sf::View camera;
 	
+	TileMap tilemap;
+
 public:
 	std::vector<Item *> items;
 	std::vector<Entity *> entities;
-
-
+	
 	World(sf::RenderWindow &window);
 	~World();
 	
 	void destroy();
-
 	void removeCollectedItems();
 
 	void spawnEntity(Entity *e);
