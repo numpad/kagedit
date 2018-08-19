@@ -198,16 +198,17 @@ void loadscripts(sol::state &lua, std::vector<Script *> &script_srcs, const char
 	}
 }
 
-sol::state new_luastate(sf::RenderWindow *window, sf::View *camera, const EventManager *manager, std::vector<Entity *> &entities, std::vector<Item *> &items) {
+sol::state new_luastate(sf::RenderWindow *window, World &world, const EventManager *manager) {
 	sol::state lua;
 	lua.open_libraries(sol::lib::base, sol::lib::io, sol::lib::string, sol::lib::os, sol::lib::math, sol::lib::table, sol::lib::package);
 	register_luaapi(lua);
-	LuaWrapper::REGISTER(&lua, window, camera);
+	LuaWrapper::REGISTER(&lua, window, &world.getCamera());
 
 	/* register __pointers__ table */
-	lua["__pointers__"]["entities"] = &entities;
-	lua["__pointers__"]["items"] = &items;
+	lua["__pointers__"]["entities"] = &world.entities;
+	lua["__pointers__"]["items"] = &world.items;
 	lua["__pointers__"]["events"] = manager;
+	lua["__pointers__"]["window"] = window;
 
 	/* run loader script */
 	lua.script_file("assets/scripts/loader.lua");
@@ -276,19 +277,13 @@ int main(int argc, char *argv[]) {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 	
 	World world(window);
-	Player *player = new Player(glm::vec2(350.0f), &window);
-	world.spawnEntity(player);
 
 	/* open lua state, load init script */
 	EventManager *manager = new EventManager();
-	sol::state lua = new_luastate(&window, &world.getCamera(), manager, world.entities, world.items);
+	sol::state lua = new_luastate(&window, world, manager);
 	std::vector<Script *> script_srcs;
 	loadscripts(lua, script_srcs);
-	sol::function f;
 	
-	world.spawnItem(new ItemGun(glm::vec2(100, 400)));
-	world.spawnItem(new ItemGun(glm::vec2(100, 450)));
-	world.spawnItem(new ItemGun(glm::vec2(100, 500)));
 	manager->callEvent("on_load");
 	
 	sf::Time dt;
@@ -308,22 +303,6 @@ int main(int argc, char *argv[]) {
 
 		if (render_imgui) {
 			ImGui::SFML::Update(window, dt);
-
-			ImGui::Begin("Controller");
-				static bool controller_keyboard = true;
-				ImGui::Text("Controls:");
-				if (ImGui::RadioButton("Keyboard", controller_keyboard) && !controller_keyboard) {
-					player->setController(new KeyboardController(player));
-					player->addController(new MouseController(player, &window));
-					controller_keyboard = !controller_keyboard;
-				}
-				
-				if (ImGui::RadioButton("Joystick", !controller_keyboard) && controller_keyboard) {
-					player->setController(new JoystickController(player, 0));
-					controller_keyboard = !controller_keyboard;
-				}
-				
-			ImGui::End();
 
 			for (Script *s : script_srcs) {
 				s->render();
@@ -358,7 +337,7 @@ int main(int argc, char *argv[]) {
 					script_srcs.push_back(new Script(&lua));
 				}
 				if (ImGui::MenuItem("Reset State")) {
-					lua = new_luastate(&window, &world.getCamera(), manager, world.entities, world.items);
+					lua = new_luastate(&window, world, manager);
 					loadscripts(lua, script_srcs);
 				}
 				if (ImGui::MenuItem("Reload Scripts")) {
@@ -391,7 +370,17 @@ int main(int argc, char *argv[]) {
 			}
 
 			if (ImGui::BeginMenu("World")) {
+				static std::vector<std::string> world_list = Filesystem::list("assets/worlds/", Filesystem::Flag::DIR);;
+				if (ImGui::MenuItem("Refresh")) {
+					world_list = Filesystem::list("assets/worlds/", Filesystem::Flag::DIR);
+				}
+
 				if (ImGui::BeginMenu("Load")) {
+					for (std::string &world_name : world_list) {
+						if (ImGui::MenuItem(world_name.c_str())) {
+
+						}
+					}
 
 					ImGui::EndMenu();
 				}
@@ -401,9 +390,6 @@ int main(int argc, char *argv[]) {
 		}
 		
 		/* update */
-		glm::vec2 stick_right = get_axis(0, sf::Joystick::Axis::Z, sf::Joystick::Axis::R);
-		player->setViewDirection(stick_right);
-	
 		world.update(dt.asSeconds());
 		
 		/* render */
@@ -434,7 +420,6 @@ int main(int argc, char *argv[]) {
 	puts("killing SOL NOW <<<");
 	AssetManager::destroy();
 	lua.script("print('last script...')");
-	lua.collect_garbage();
 	puts("lua collected GARBAGE");
 	return 0;
 }

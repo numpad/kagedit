@@ -2,10 +2,12 @@
 
 __pointers__.events:add('on_load',
 	function ()
-		player.events:add('on_update',
-			function (dt)
-				camera.pos = player.pos
-			end
-		)
+		if player then
+			player.events:add('on_update',
+				function (dt)
+					camera.pos = player.pos
+				end
+			)
+		end
 	end
 )
