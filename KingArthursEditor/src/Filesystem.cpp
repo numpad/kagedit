@@ -7,8 +7,6 @@ std::vector<std::string> Filesystem::list(std::string path, Filesystem::flag_typ
 
 	bool include_files = static_cast<Filesystem::flag_type>(flags) & static_cast<Filesystem::flag_type>(Filesystem::Flag::FILE);
 	bool include_dirs = static_cast<Filesystem::flag_type>(flags) & static_cast<Filesystem::flag_type>(Filesystem::Flag::DIR);
-	printf("dirs ok? %d\n", include_dirs);
-	printf("files ok? %d\n", include_files);
 
 	std::vector<std::string> result;
 
@@ -27,7 +25,6 @@ std::vector<std::string> Filesystem::list(std::string path, Filesystem::flag_typ
 		bool is_dir = file.is_dir;
 
 		if (!(is_file && include_files || is_dir && include_dirs)) {
-			printf("skipping %s\n", file.name);
 			tinydir_next(&dir);
 			continue;
 		}
