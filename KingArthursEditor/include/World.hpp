@@ -23,7 +23,7 @@ extern "C" {
 #include "Entity.hpp"
 #include "Player.hpp"
 #include "Item.hpp"
-
+#include "EventManager.hpp"
 #include "TileMap.hpp"
 
 class World {
@@ -31,6 +31,8 @@ class World {
 	sf::View camera;
 	
 	TileMap tilemap;
+	
+	EventManager *events;
 
 public:
 	std::vector<Item *> items;
@@ -39,6 +41,8 @@ public:
 	World(sf::RenderWindow &window);
 	~World();
 	
+	EventManager &getEvents();
+
 	void destroy();
 	void removeCollectedItems();
 

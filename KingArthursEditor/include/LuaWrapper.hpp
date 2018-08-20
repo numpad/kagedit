@@ -18,6 +18,7 @@
 
 #include "Item.hpp"
 #include "ItemGun.hpp"
+#include "World.hpp"
 
 #include "EventManager.hpp"
 
@@ -28,6 +29,7 @@ class LuaWrapper {
 	static void REGISTER_CASTS(sol::state &lua);
 	static void REGISTER_EVENTMANAGER(sol::state &lua);
 	static void REGISTER_IMGUI(sol::state &lua);
+	static void REGISTER_WORLD(sol::state &lua);
 
 public:
 	static sol::state *lua;

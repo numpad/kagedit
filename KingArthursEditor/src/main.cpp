@@ -205,6 +205,7 @@ sol::state new_luastate(sf::RenderWindow *window, World &world, const EventManag
 	LuaWrapper::REGISTER(&lua, window, &world.getCamera());
 
 	/* register __pointers__ table */
+	lua["__pointers__"]["world"] = &world;
 	lua["__pointers__"]["entities"] = &world.entities;
 	lua["__pointers__"]["items"] = &world.items;
 	lua["__pointers__"]["events"] = manager;

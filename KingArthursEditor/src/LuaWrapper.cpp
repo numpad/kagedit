@@ -196,6 +196,19 @@ void LuaWrapper::REGISTER(sol::state *lua, sf::RenderWindow *window, sf::View *c
 	LuaWrapper::REGISTER_CASTS(*lua);
 	LuaWrapper::REGISTER_EVENTMANAGER(*lua);
 	LuaWrapper::REGISTER_IMGUI(*lua);
+	LuaWrapper::REGISTER_WORLD(*lua);
+}
+
+void LuaWrapper::REGISTER_WORLD(sol::state &lua) {
+	lua.new_usertype<World>(
+		"World",
+		"items", &World::items,
+		"entities", &World::entities,
+		"events", sol::property(&World::getEvents),
+		"new", sol::factories([](){ new World(*LuaWrapper::window); }),
+		"spawnEntity", &World::spawnEntity,
+		"spawnItem", &World::spawnItem
+	);
 }
 
 glm::vec2 LuaWrapper::getMousePosition() {
