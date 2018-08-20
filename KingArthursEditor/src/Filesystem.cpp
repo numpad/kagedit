@@ -1,4 +1,4 @@
-#include "..\include\Filesystem.hpp"
+#include "Filesystem.hpp"
 
 std::vector<std::string> Filesystem::list(std::string path, Filesystem::flag_type flags) {
 	/* open path */
