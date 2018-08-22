@@ -197,6 +197,7 @@ void LuaWrapper::REGISTER(sol::state *lua, sf::RenderWindow *window, sf::View *c
 	LuaWrapper::REGISTER_EVENTMANAGER(*lua);
 	LuaWrapper::REGISTER_IMGUI(*lua);
 	LuaWrapper::REGISTER_WORLD(*lua);
+	LuaWrapper::REGISTER_SFML(*lua);
 }
 
 void LuaWrapper::REGISTER_WORLD(sol::state &lua) {
@@ -205,9 +206,17 @@ void LuaWrapper::REGISTER_WORLD(sol::state &lua) {
 		"items", &World::items,
 		"entities", &World::entities,
 		"events", sol::property(&World::getEvents),
-		"new", sol::factories([](){ new World(*LuaWrapper::window); }),
+		"new", sol::factories([](){ new World(); }),
 		"spawnEntity", &World::spawnEntity,
-		"spawnItem", &World::spawnItem
+		"spawnItem", &World::spawnItem,
+		"loadLayer", &World::loadLayerFromLua
+	);
+}
+
+void LuaWrapper::REGISTER_SFML(sol::state &lua) {
+	lua.new_usertype<sf::RenderWindow>(
+		"RenderWindow",
+		"getSize", [](sf::RenderWindow &window){ return glm::vec2((float)window.getSize().x, (float)window.getSize().y); }
 	);
 }
 

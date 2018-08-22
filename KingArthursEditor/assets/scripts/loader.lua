@@ -21,3 +21,4 @@ for i = 1, #scripts do
 end
 
 print('[loader] Finished! Loaded ' .. #scripts .. ' script(s)!')
+

@@ -11,26 +11,54 @@ void World::removeCollectedItems() {
 	}
 }
 
-World::World(sf::RenderWindow &window)
-	: window(window)
-{
-	this->camera.reset(sf::FloatRect(0.0f, 0.0f, (float)window.getSize().x, (float)window.getSize().y));
-	this->window.setView(this->camera);
+World *World::load(std::string worldname, sol::state &lua) {
+	/* build dir paths */
+	char basepath[1024] = {0};
+	sprintf(basepath, "assets/worlds/%s", worldname.c_str());
+	char loader_path[1024] = {0};
+	sprintf(loader_path, "%s/loader.lua", basepath);
+	char data_path[1024] = {0};
+	sprintf(data_path, "./%s/data/?.lua", basepath);
 	
-	this->events = new EventManager();
+	World *w = new World();
+	
+	/* create lua state to load world */
+	std::string old_require_path = lua["package"]["path"];
+	char full_require_path[2048];
+	sprintf(full_require_path, "%s;%s", data_path, old_require_path.c_str());
 
-	std::vector<int> tiles = {1, 2, 3, 4};
-	for (int &t : tiles) t--;
-	this->tilemap.load(
-		tiles,
-		AssetManager::load("assets/worlds/map1/images/tileset.png"),
-		2, 2,
-		64
-	);
+	/* set require path relative to  */
+	lua["package"]["path"] = std::string(full_require_path);
+	lua.script_file(loader_path);
+	lua["package"]["path"] = std::string(old_require_path);
+	
+	return w;
+}
+
+World::World() {
+	this->events = new EventManager();
 }
 
 World::~World() {
 	//this->destroy();
+}
+
+void World::loadLayerFromLua(sol::table table, std::string tileset_path, int width, int height, int tilesize) {
+	std::vector<TileMap::tile_type> tiles(table.size());
+	for (size_t i = 0; i < table.size(); ++i) {
+		tiles[i] = table[i + 1];
+		tiles[i]--;
+	}
+
+	TileMap *tm = new TileMap();
+	tm->load(
+		tiles,
+		AssetManager::load(tileset_path),
+		width, height,
+		tilesize
+	);
+
+	this->layers.push_back(tm);
 }
 
 EventManager &World::getEvents() {
@@ -38,6 +66,11 @@ EventManager &World::getEvents() {
 }
 
 void World::destroy() {
+	this->events->callEvent("on_destroy");
+
+	for (TileMap *tm : this->layers) {
+		delete tm;
+	}
 	puts("WORLD DESTRUCT start <");
 	printf("  #items=%d\n", (int)items.size());
 	for (size_t i = 0; i < items.size(); ++i)    delete items.at(i);
@@ -65,6 +98,8 @@ sf::View &World::getCamera() {
 
 void World::update(float dt) {
 	this->removeCollectedItems();
+	
+	this->events->callEvent("on_update", dt);
 
 	for (auto it = entities.begin(); it != entities.end(); ++it) {
 		Entity *entity = *it;
@@ -82,15 +117,17 @@ void World::update(float dt) {
 
 }
 
-void World::render() {
-	this->window.setView(this->camera);
-
-	window.draw(this->tilemap);
+void World::render(sf::RenderTarget &target) {
+	target.setView(this->camera);
+	
+	for (TileMap *tilemap : this->layers) {
+		target.draw(*tilemap);
+	}
 
 	for (Item *item : this->items) {
-		item->draw(window);
+		item->draw(target);
 	}
 	for (Entity *entity : this->entities) {
-		entity->draw(window);
+		entity->draw(target);
 	}
 }

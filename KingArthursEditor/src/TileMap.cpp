@@ -19,16 +19,16 @@ void TileMap::setQuadPosition(sf::Vertex *v, unsigned int x, unsigned int y) {
 }
 
 void TileMap::initTiles() {
+	const int tiles_width = (this->tileset->getSize().x / this->tilewidth);
 	for (unsigned int y = 0; y < this->height; ++y) {
 		for (unsigned int x = 0; x < this->width; ++x) {
 			/* value of tile */
-			TileMap::tile_type tile_val = tiles[x + y * height];
+			TileMap::tile_type tile_val = this->tiles[x + y * width];
 			sf::Vertex *quad = this->getTileVertex(x, y);
 
 			/* texcoords */
-			int tu = tile_val % (this->tileset->getSize().x / tilewidth);
-			int tv = tile_val / (this->tileset->getSize().y / tileheight);
-
+			int tu = tile_val % tiles_width;
+			int tv = tile_val / tiles_width;
 			/* init */
 			this->setQuadPosition(quad, x, y);
 			this->setQuadTexCoords(quad, tu, tv);
@@ -36,7 +36,7 @@ void TileMap::initTiles() {
 	}
 }
 
-void TileMap::load(std::vector<tile_type> tiles, sf::Texture * texture, int width, int height, int tilesize) {
+void TileMap::load(std::vector<tile_type> tiles, sf::Texture *texture, int width, int height, int tilesize) {
 	this->setSize(width, height);
 	this->setTileSize(tilesize);
 	this->setTiles(tiles);
@@ -61,7 +61,6 @@ void TileMap::setTileSize(unsigned int tilewidth, unsigned int tileheight) {
 	this->tilewidth = tilewidth;
 	this->tileheight = tileheight;
 }
-
 
 void TileMap::setTiles(std::vector<TileMap::tile_type> tiles) {
 	this->tiles = tiles;

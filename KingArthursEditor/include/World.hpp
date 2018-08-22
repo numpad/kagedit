@@ -26,11 +26,12 @@ extern "C" {
 #include "EventManager.hpp"
 #include "TileMap.hpp"
 
+#include "LuaWrapper.hpp"
+
 class World {
-	sf::RenderWindow &window;
 	sf::View camera;
 	
-	TileMap tilemap;
+	std::vector<TileMap *> layers;
 	
 	EventManager *events;
 
@@ -38,9 +39,13 @@ public:
 	std::vector<Item *> items;
 	std::vector<Entity *> entities;
 	
-	World(sf::RenderWindow &window);
+	static World *load(std::string worldname, sol::state &lua);
+
+	World();
 	~World();
 	
+	void loadLayerFromLua(sol::table table, std::string tileset_path, int width, int height, int tilesize);
+
 	EventManager &getEvents();
 
 	void destroy();
@@ -52,7 +57,7 @@ public:
 	sf::View &getCamera();
 
 	void update(float dt);
-	void render();
+	void render(sf::RenderTarget &target);
 };
 
 #endif

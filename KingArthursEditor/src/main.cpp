@@ -277,11 +277,11 @@ int main(int argc, char *argv[]) {
 	ImGui::StyleColorsLight();
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 	
-	World world(window);
+	World *world = new World();
 
 	/* open lua state, load init script */
 	EventManager *manager = new EventManager();
-	sol::state lua = new_luastate(&window, world, manager);
+	sol::state lua = new_luastate(&window, *world, manager);
 	std::vector<Script *> script_srcs;
 	loadscripts(lua, script_srcs);
 	
@@ -294,7 +294,7 @@ int main(int argc, char *argv[]) {
 
 	while (window.isOpen()) {
 		sf::Time dt = dt_clock.restart();
-		
+		world->getCamera().setSize(window.getSize().x, window.getSize().y);
 		static bool close = false, render_imgui = true, render_imgui_toggle = false;
 		if (close) { window.close(); break; }
 		handle_events(window, render_imgui, manager);
@@ -338,7 +338,7 @@ int main(int argc, char *argv[]) {
 					script_srcs.push_back(new Script(&lua));
 				}
 				if (ImGui::MenuItem("Reset State")) {
-					lua = new_luastate(&window, world, manager);
+					lua = new_luastate(&window, *world, manager);
 					loadscripts(lua, script_srcs);
 				}
 				if (ImGui::MenuItem("Reload Scripts")) {
@@ -379,7 +379,9 @@ int main(int argc, char *argv[]) {
 				if (ImGui::BeginMenu("Load")) {
 					for (std::string &world_name : world_list) {
 						if (ImGui::MenuItem(world_name.c_str())) {
-
+							world->destroy();
+							delete world;
+							world = World::load(world_name, lua);
 						}
 					}
 
@@ -391,11 +393,11 @@ int main(int argc, char *argv[]) {
 		}
 		
 		/* update */
-		world.update(dt.asSeconds());
+		world->update(dt.asSeconds());
 		
 		/* render */
 		window.clear();
-		world.render();
+		world->render(window);
 		
 		/* imgui render */
 		if (render_imgui) {
@@ -414,7 +416,8 @@ int main(int argc, char *argv[]) {
 
 	/* cleanup */
 	for (Script *s : script_srcs) delete s;
-	world.destroy();
+	world->destroy();
+	delete world;
 	delete manager;
 	ImGui::SFML::Shutdown();
 	// dummy, keep sol alive

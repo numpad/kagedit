@@ -5,8 +5,11 @@
 #include <SFML/Graphics.hpp>
 
 class TileMap : public sf::Drawable, public sf::Transformable {
+public:
 	using tile_type = int;
-	
+
+private:
+
 	sf::VertexArray vertices;
 	sf::Texture *tileset;
 	std::vector<tile_type> tiles;

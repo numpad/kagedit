@@ -8,18 +8,18 @@ return {
   height = 64,
   tilewidth = 64,
   tileheight = 64,
-  nextobjectid = 33,
+  nextobjectid = 40,
   properties = {},
   tilesets = {
     {
       name = "Kenney Topdown",
       firstgid = 1,
-      filename = "Kenney Topdown.tsx",
+      filename = "../../../../../../../Documents/Tiled/Tilesets/Kenney Topdown.tsx",
       tilewidth = 64,
       tileheight = 64,
       spacing = 0,
       margin = 0,
-      image = "tilesheet_complete.png",
+      image = "../images/tilesheet_complete.png",
       imagewidth = 1728,
       imageheight = 1280,
       tileoffset = {
@@ -352,40 +352,51 @@ return {
             { x = 78.7879, y = 830.303 }
           },
           properties = {}
+        },
+        {
+          id = 33,
+          name = "Player Spawn",
+          type = "spawner",
+          shape = "point",
+          x = 1136.47,
+          y = 1791.95,
+          width = 0,
+          height = 0,
+          rotation = 0,
+          visible = true,
+          properties = {
+            ["entity"] = "Player"
+          }
+        },
+        {
+          id = 38,
+          name = "Item Spawner",
+          type = "spawner",
+          shape = "rectangle",
+          x = 2584.74,
+          y = 2654.71,
+          width = 701.946,
+          height = 509.512,
+          rotation = 0,
+          visible = true,
+          properties = {
+            ["count"] = 5,
+            ["entity"] = "ItemGun",
+            ["entity_type"] = "item"
+          }
         }
       }
     },
     {
       type = "objectgroup",
       name = "Houses",
-      visible = true,
+      visible = false,
       opacity = 1,
       offsetx = 0,
       offsety = 0,
       draworder = "topdown",
       properties = {},
       objects = {
-        {
-          id = 20,
-          name = "House",
-          type = "House",
-          shape = "polygon",
-          x = 1598,
-          y = 1981,
-          width = 0,
-          height = 0,
-          rotation = 0,
-          visible = true,
-          polygon = {
-            { x = 0, y = 0 },
-            { x = 3, y = -573 },
-            { x = -317, y = -572 },
-            { x = -318, y = -384 },
-            { x = -574, y = -381 },
-            { x = -574, y = 1 }
-          },
-          properties = {}
-        },
         {
           id = 21,
           name = "Old House",
@@ -429,36 +440,25 @@ return {
           properties = {}
         },
         {
-          id = 29,
-          name = "entity_spawner",
-          type = "",
-          shape = "point",
-          x = 2285.33,
-          y = -4,
+          id = 20,
+          name = "House",
+          type = "House",
+          shape = "polygon",
+          x = 1598,
+          y = 1981,
           width = 0,
           height = 0,
           rotation = 0,
           visible = true,
-          properties = {
-            ["direction"] = "(0, 1)",
-            ["entity_type"] = "car"
-          }
-        },
-        {
-          id = 32,
-          name = "entity_spawner",
-          type = "",
-          shape = "point",
-          x = 2129.33,
-          y = 4104,
-          width = 0,
-          height = 0,
-          rotation = 0,
-          visible = true,
-          properties = {
-            ["direction"] = "(0, -1)",
-            ["entity_type"] = "car"
-          }
+          polygon = {
+            { x = 0, y = 0 },
+            { x = 3, y = -573 },
+            { x = -317, y = -572 },
+            { x = -318, y = -384 },
+            { x = -574, y = -381 },
+            { x = -574, y = 1 }
+          },
+          properties = {}
         }
       }
     }

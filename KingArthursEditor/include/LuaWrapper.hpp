@@ -24,14 +24,16 @@
 
 class LuaWrapper {
 
+public:
+
 	static void REGISTER_PLAYER(sol::state *lua);
 	static void REGISTER_ITEMS(sol::state *lua);
 	static void REGISTER_CASTS(sol::state &lua);
 	static void REGISTER_EVENTMANAGER(sol::state &lua);
 	static void REGISTER_IMGUI(sol::state &lua);
 	static void REGISTER_WORLD(sol::state &lua);
-
-public:
+	static void REGISTER_SFML(sol::state &lua);
+	
 	static sol::state *lua;
 	static sf::RenderWindow *window;
 	static sf::View *camera;
