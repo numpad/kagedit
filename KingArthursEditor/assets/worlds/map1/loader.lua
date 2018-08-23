@@ -57,7 +57,7 @@ end
 -- add world scripts
 world.events:add('on_update',
 	function (dt)
-		camera.pos = player.pos
+		world.camera.pos = player.pos
 	end
 )
 

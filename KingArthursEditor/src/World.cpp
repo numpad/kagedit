@@ -21,7 +21,11 @@ World *World::load(std::string worldname, sol::state &lua) {
 	sprintf(data_path, "./%s/data/?.lua", basepath);
 	
 	World *w = new World();
-	
+	lua["__pointers__"]["world"] = w;
+	lua["world"] = w;
+
+
+
 	/* create lua state to load world */
 	std::string old_require_path = lua["package"]["path"];
 	char full_require_path[2048];
@@ -118,7 +122,6 @@ void World::update(float dt) {
 }
 
 void World::render(sf::RenderTarget &target) {
-	target.setView(this->camera);
 	
 	for (TileMap *tilemap : this->layers) {
 		target.draw(*tilemap);

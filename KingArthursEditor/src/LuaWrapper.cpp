@@ -201,11 +201,16 @@ void LuaWrapper::REGISTER(sol::state *lua, sf::RenderWindow *window, sf::View *c
 }
 
 void LuaWrapper::REGISTER_WORLD(sol::state &lua) {
+
+	auto world_getitems = [](World &w){ return &w.items; };
+	auto world_getentities = [](World &w){ return &w.entities; };
+
 	lua.new_usertype<World>(
 		"World",
-		"items", &World::items,
-		"entities", &World::entities,
+		"items", sol::property(world_getitems),
+		"entities", sol::property(world_getentities),
 		"events", sol::property(&World::getEvents),
+		"camera", sol::property([](World &w){ return &w.getCamera(); }),
 		"new", sol::factories([](){ new World(); }),
 		"spawnEntity", &World::spawnEntity,
 		"spawnItem", &World::spawnItem,

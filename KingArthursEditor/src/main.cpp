@@ -206,8 +206,6 @@ sol::state new_luastate(sf::RenderWindow *window, World &world, const EventManag
 
 	/* register __pointers__ table */
 	lua["__pointers__"]["world"] = &world;
-	lua["__pointers__"]["entities"] = &world.entities;
-	lua["__pointers__"]["items"] = &world.items;
 	lua["__pointers__"]["events"] = manager;
 	lua["__pointers__"]["window"] = window;
 
@@ -295,6 +293,8 @@ int main(int argc, char *argv[]) {
 	while (window.isOpen()) {
 		sf::Time dt = dt_clock.restart();
 		world->getCamera().setSize(window.getSize().x, window.getSize().y);
+		window.setView(world->getCamera());
+
 		static bool close = false, render_imgui = true, render_imgui_toggle = false;
 		if (close) { window.close(); break; }
 		handle_events(window, render_imgui, manager);
