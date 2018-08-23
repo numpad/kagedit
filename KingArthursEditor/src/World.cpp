@@ -21,10 +21,10 @@ World *World::load(std::string worldname, sol::state &lua) {
 	sprintf(data_path, "./%s/data/?.lua", basepath);
 	
 	World *w = new World();
+	w->name = worldname;
+
 	lua["__pointers__"]["world"] = w;
 	lua["world"] = w;
-
-
 
 	/* create lua state to load world */
 	std::string old_require_path = lua["package"]["path"];
@@ -48,6 +48,9 @@ World::~World() {
 }
 
 void World::loadLayerFromLua(sol::table table, std::string tileset_path, int width, int height, int tilesize) {
+	char load_path[1024] = {0};
+	sprintf(load_path, "assets/worlds/%s/%s", this->name.c_str(), tileset_path.c_str());
+	
 	std::vector<TileMap::tile_type> tiles(table.size());
 	for (size_t i = 0; i < table.size(); ++i) {
 		tiles[i] = table[i + 1];
@@ -57,7 +60,7 @@ void World::loadLayerFromLua(sol::table table, std::string tileset_path, int wid
 	TileMap *tm = new TileMap();
 	tm->load(
 		tiles,
-		AssetManager::load(tileset_path),
+		AssetManager::load(load_path),
 		width, height,
 		tilesize
 	);
@@ -104,7 +107,7 @@ void World::update(float dt) {
 	this->removeCollectedItems();
 	
 	this->events->callEvent("on_update", dt);
-
+	
 	for (auto it = entities.begin(); it != entities.end(); ++it) {
 		Entity *entity = *it;
 		entity->update(dt);

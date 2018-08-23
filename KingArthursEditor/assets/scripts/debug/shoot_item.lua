@@ -3,6 +3,8 @@ spread = 10
 strength = 15
 extra_strength = 6
 recoil = 2.25
+count_min = 4
+count_max = 8
 
 local function on_mousebutton(x, y, button, pressed)
 	if pressed and button == 'left' then
@@ -17,7 +19,7 @@ local function on_mousebutton(x, y, button, pressed)
 end
 
 local function do_times(x, y, b, p)
-	local t = math.random(4) + 2
+	local t = math.random(count_min, count_max)
 	for i=1, t do
 		on_mousebutton(x, y, b, p)
 	end

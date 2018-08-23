@@ -1,20 +1,25 @@
-function on_mousebutton(x, y, btn, pressed)
-	if pressed then return end
-	
-	local items = __pointers__.items
-	local player = __pointers__.entities:at(1)
-	local d_min = 9999
-	local d_i = 0
 
-	for i=1,#items do
-	  local d = player:distanceTo(items:at(i))
-	  
-	  if d < d_min then
-		d_min = d
-		d_i = i
-	  end
+local function closest()
+	local c = nil
+
+	for _, i in pairs(world.items) do
+		if c == nil or (i.pos - player.pos):length() < (c.pos - player.pos):length() then
+			c = i
+		end
 	end
 
-	local nearest = items:at(d_i)
-	player.acc = (nearest.pos - player.pos) * 0.05
+	return c
 end
+
+
+player.events:add('on_update',
+	function (dt)
+		local i = closest()
+		if i == nil then return end
+
+		local dir = (i.pos - player.pos):normalize()
+		player.acc = dir * 0.75
+		player:setViewDirection(player.vel)
+	end
+)
+

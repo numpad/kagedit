@@ -30,7 +30,8 @@ extern "C" {
 
 class World {
 	sf::View camera;
-	
+	std::string name = "unnamed_world";
+
 	std::vector<TileMap *> layers;
 	
 	EventManager *events;
