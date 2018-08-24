@@ -25,7 +25,7 @@ protected:
 	
 	std::string name = "entity";
 
-	EventManager *events;
+	EventManager *events = nullptr;
 
 	/* util */
 	void setTexture(const sf::Texture &texture, glm::vec2 origin = glm::vec2(0.5f));
@@ -44,6 +44,7 @@ public:
 	void setName(std::string name);
 	std::string getName();
 	EventManager &getEvents();
+	bool hasEvents();
 
 	/* position */
 	glm::vec2 getPos();

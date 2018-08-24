@@ -55,10 +55,14 @@ void Item::onPickup(Entity &entity) {
 	this->setCollected();
 
 	// execute on pickup script
-	entity.getEvents().callEvent("on_collect", this);
+	if (entity.hasEvents())
+		entity.getEvents().callEvent("on_collect", this);
+
 	/* check again, maybe the entity script denied pickup */
-	if (this->isCollected())
-		this->events->callEvent("on_collected", &entity);
+	if (this->isCollected()) {
+		if (this->hasEvents())
+			this->events->callEvent("on_collected", &entity);
+	}
 }
 
 void Item::update(float dt_seconds) {

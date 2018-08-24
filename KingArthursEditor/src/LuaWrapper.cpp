@@ -20,6 +20,7 @@ void LuaWrapper::REGISTER_PLAYER(sol::state *lua) {
 		"pickup", [](Entity &e, Item *i){ i->onPickup(e); },
 		"getName", &Entity::getName,
 		"setName", &Entity::setName,
+		"hasEvents", &Entity::hasEvents,
 		"getPos", &Entity::getPos,
 		"setPos", &Entity::setPos,
 		"getVel", &Entity::getVel,

@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include <SFML/Graphics.hpp>
 #include <sol.hpp>
+
 #include "Entity.hpp"
 
 #include "AssetManager.hpp"
