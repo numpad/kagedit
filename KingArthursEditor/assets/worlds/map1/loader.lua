@@ -6,7 +6,9 @@ print('Map Version: ' .. world_data.version)
 -- parse layers
 for i, layer in pairs(world_data.layers) do
 	if layer.type == 'tilelayer' then
-		world:loadLayer(layer.data, 'images/tilesheet_complete.png', layer.width, layer.height, world_data.tilewidth)
+		if layer.visible then
+			world:loadLayer(layer.data, 'images/tilesheet_complete.png', layer.width, layer.height, world_data.tilewidth)
+		end
 	elseif layer.type == 'objectgroup' and layer.name == 'Spawn Areas' then
 		for i, object in pairs(layer.objects) do
 			if object.type == 'spawner' then
