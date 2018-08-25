@@ -32,6 +32,7 @@ Script::Script(sol::state *lua, char *content, const char *name, bool hidden) {
 
 Script::~Script() {
 	delete[] this->src;
+	delete[] this->err;
 }
 
 void Script::hide() {
@@ -39,7 +40,25 @@ void Script::hide() {
 }
 
 void Script::execute() {
-	this->lua->safe_script(this->src);
+	try {
+		this->set_err("");
+		this->lua->safe_script(this->src);
+	} catch (sol::error &e) {
+		printf("errrrr\n");
+		this->set_err(e.what());
+	}
+}
+
+void Script::set_err(std::string msg) {
+	delete[] this->err;
+	if (msg == "") {
+		this->err = nullptr;
+	}
+
+	this->err_len = msg.size() + 1;
+	this->err = new char[this->err_len];
+	strncpy(this->err, msg.c_str(), msg.size());
+	this->err[this->err_len - 1] = '\0';
 }
 
 void Script::render() {
@@ -49,12 +68,17 @@ void Script::render() {
 	sprintf(title, "%s###1%d", this->name, this->id);
 
 	ImGui::Begin(title, &this->shown);
-	ImGui::InputText("##Name", this->name, Script::name_len);
-	ImGui::SameLine();
-	if (ImGui::Button("Run")) {
-		this->execute();
-	}
-	float height = 62.0f;
-	ImGui::InputTextMultiline("", this->src, this->len, ImVec2(ImGui::GetWindowWidth() - 18.0f, ImGui::GetWindowHeight() - height));
+		ImGui::InputText("##Name", this->name, Script::name_len);
+		ImGui::SameLine();
+		if (ImGui::Button("Run")) {
+			this->execute();
+		}
+		float height = 76.0f; //62.0f
+		ImGui::InputTextMultiline("", this->src, this->len, ImVec2(ImGui::GetWindowWidth() - 18.0f, ImGui::GetWindowHeight() - height));
+		if (ImGui::TreeNode("Output")) {
+			if (this->err != nullptr)
+				ImGui::TextColored(ImVec4(1.0, 0.0, 0.0, 1.0), this->err);
+			ImGui::TreePop();
+		}
 	ImGui::End();
 }
