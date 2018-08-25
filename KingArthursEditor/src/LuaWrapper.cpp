@@ -39,7 +39,9 @@ void LuaWrapper::REGISTER_PLAYER(sol::state *lua) {
 	lua->new_usertype<Player>(
 		"Player",
 		sol::base_classes, sol::bases<Entity>(),
-		"new", sol::factories([](glm::vec2 pos){ return new Player(pos, LuaWrapper::window); })
+		"new", sol::factories([](glm::vec2 pos){ return new Player(pos, LuaWrapper::window); }),
+		"setController", &Player::setController,
+		"addController", &Player::addController
 	);
 }
 
@@ -145,20 +147,26 @@ void LuaWrapper::REGISTER(sol::state *lua, sf::RenderWindow *window, sf::View *c
 		"normalize",						[](const glm::vec2 &v){ return glm::normalize(v); },
 		"rotate",							[](const glm::vec2 &v, float radians){ return glm::rotate(v, radians); }
 	);
-		
-	LuaWrapper::lua->create_named_table("input",
-		"getMousePosition", [window](){ sf::Vector2i mp = sf::Mouse::getPosition(*window); return glm::vec2((float)mp.x, (float)mp.y); },
-		"getMouseButton", [](const char *key){
-			if (key == nullptr) return sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
-			if (strcmp(key, "left") == 0) return sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
-			if (strcmp(key, "right") == 0) return sf::Mouse::isButtonPressed(sf::Mouse::Button::Right);
-			if (strcmp(key, "middle") == 0) return sf::Mouse::isButtonPressed(sf::Mouse::Button::Middle);
-			if (strcmp(key, "x1") == 0) return sf::Mouse::isButtonPressed(sf::Mouse::Button::XButton1);
-			if (strcmp(key, "x2") == 0) return sf::Mouse::isButtonPressed(sf::Mouse::Button::XButton2);
-			return false;
-		}
-	);
 	
+	/* input */
+	static auto get_mousebutton = [](const char *key){
+		puts("mouse button ###");
+		if (key == nullptr) return sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
+		if (strcmp(key, "left") == 0) return sf::Mouse::isButtonPressed(sf::Mouse::Button::Left);
+		if (strcmp(key, "right") == 0) return sf::Mouse::isButtonPressed(sf::Mouse::Button::Right);
+		if (strcmp(key, "middle") == 0) return sf::Mouse::isButtonPressed(sf::Mouse::Button::Middle);
+		if (strcmp(key, "x1") == 0) return sf::Mouse::isButtonPressed(sf::Mouse::Button::XButton1);
+		if (strcmp(key, "x2") == 0) return sf::Mouse::isButtonPressed(sf::Mouse::Button::XButton2);
+		return false;
+	};
+
+	static auto get_keydown = [](const char *key){ return sf::Keyboard::isKeyPressed(Util::StringToKey(key)) == true; };
+	
+	sol::table linput = LuaWrapper::lua->create_named_table("input");
+	linput["getMousePosition"] = [window](){ sf::Vector2i mp = sf::Mouse::getPosition(*window); return glm::vec2((float)mp.x, (float)mp.y); };
+	linput["getMouseButton"] = get_mousebutton;
+	linput["getKey"] = get_keydown;
+
 	/* camera */
 	auto cam_getpos = [](const sf::View &camera){ const sf::Vector2f pos = camera.getCenter(); return glm::vec2(pos.x, pos.y); };
 	auto cam_setpos = [](sf::View &camera, const glm::vec2 &p){ camera.setCenter(p.x, p.y); };
@@ -199,6 +207,7 @@ void LuaWrapper::REGISTER(sol::state *lua, sf::RenderWindow *window, sf::View *c
 	LuaWrapper::REGISTER_IMGUI(*lua);
 	LuaWrapper::REGISTER_WORLD(*lua);
 	LuaWrapper::REGISTER_SFML(*lua);
+	LuaWrapper::REGISTER_CONTROLLERS(*lua);
 }
 
 void LuaWrapper::REGISTER_WORLD(sol::state &lua) {
@@ -223,6 +232,15 @@ void LuaWrapper::REGISTER_SFML(sol::state &lua) {
 	lua.new_usertype<sf::RenderWindow>(
 		"RenderWindow",
 		"getSize", [](sf::RenderWindow &window){ return glm::vec2((float)window.getSize().x, (float)window.getSize().y); }
+	);
+}
+
+void LuaWrapper::REGISTER_CONTROLLERS(sol::state &lua) {
+	lua.new_usertype<KeyboardController>(
+		"KeyboardController",
+		sol::base_classes, sol::bases<Controller>(),
+		"new", sol::factories([](Entity *e){ return new KeyboardController(e); }),
+		"map", [](KeyboardController &self, const char *name, const char *key){ self.mapKey(std::string(name), Util::StringToKey(key)); }
 	);
 }
 

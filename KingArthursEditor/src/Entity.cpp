@@ -78,6 +78,7 @@ std::string Entity::getName() {
 
 EventManager &Entity::getEvents() {
 	if (!this->hasEvents()) {
+		/* create eventmanager if none exists */
 		this->events = new EventManager();
 	}
 	return *(this->events);

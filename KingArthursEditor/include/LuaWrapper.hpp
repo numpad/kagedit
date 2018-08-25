@@ -20,7 +20,11 @@
 #include "ItemGun.hpp"
 #include "World.hpp"
 
+#include "Controller.hpp"
+#include "KeyboardController.hpp"
+
 #include "EventManager.hpp"
+#include "Util.hpp"
 
 class LuaWrapper {
 
@@ -33,6 +37,7 @@ public:
 	static void REGISTER_IMGUI(sol::state &lua);
 	static void REGISTER_WORLD(sol::state &lua);
 	static void REGISTER_SFML(sol::state &lua);
+	static void REGISTER_CONTROLLERS(sol::state &lua);
 	
 	static sol::state *lua;
 	static sf::RenderWindow *window;

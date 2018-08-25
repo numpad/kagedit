@@ -40,6 +40,7 @@ extern "C" {
 #include "LuaWrapper.hpp"
 #include "EventManager.hpp"
 #include "Filesystem.hpp"
+#include "Util.hpp"
 
 #if !defined(_WIN32)
 #define sprintf_s sprintf
@@ -97,6 +98,16 @@ void handle_events(sf::Window &window, bool render_imgui, EventManager *manager)
 			default: t = ""; break;
 			};
 			manager->callEvent("on_mousebutton", e.mouseButton.x, e.mouseButton.y, t, false);
+			break;
+		}
+		case sf::Event::KeyPressed: {
+			const char *keyname = Util::KeyToString(e.key.code);
+			manager->callEvent("on_key", keyname, true);
+			break;
+		}
+		case sf::Event::KeyReleased: {
+			const char *keyname = Util::KeyToString(e.key.code);
+			manager->callEvent("on_key", keyname, false);
 			break;
 		}
 		case sf::Event::MouseEntered:
@@ -262,7 +273,7 @@ int main(int argc, char *argv[]) {
 	bool vsync_enabled;
 	int framerate;
 	load_config(vm, vsync_enabled, framerate, wstyle);
-
+	
 	sf::RenderWindow window(vm, "p.flesh", wstyle);
 	if (vsync_enabled)		window.setVerticalSyncEnabled(vsync_enabled);
 	else if (framerate > 0)	window.setFramerateLimit(framerate);
