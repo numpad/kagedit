@@ -1,6 +1,10 @@
 
 local lastpos = nil
 
+function draggingCamera()
+	return lastpos ~= nil
+end
+
 __pointers__.events:add('on_mousebutton',
 	function (x, y, btn, press)
 		if press and btn == 'right' and not lastpos then

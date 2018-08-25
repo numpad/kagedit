@@ -19,9 +19,11 @@ end
 -- add world scripts
 world.events:add('on_update',
 	function (dt)
-		local dir = player.pos - world.camera.pos
-		dir = dir / 6.5
-		world.camera.pos = world.camera.pos + dir
+		if not draggingCamera() then
+			local dir = player.pos - world.camera.pos
+			dir = dir / 6.5
+			world.camera.pos = world.camera.pos + dir
+		end
 	end
 )
 
