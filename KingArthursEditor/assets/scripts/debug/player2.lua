@@ -15,7 +15,8 @@ function spawnPlayer(pos)
 			e:setViewDirection(e.vel)
 		end
 	)
-
+	
+	e:setTexture('images/kenney-topdown/Zombie 1/zoimbie1_hold.png')
 	world:spawnEntity(e)
 end
 

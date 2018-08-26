@@ -9,6 +9,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "EventManager.hpp"
+#include "AssetManager.hpp"
 
 class Entity {
 private:
@@ -39,7 +40,9 @@ public:
 
 	/* util */
 	float distanceTo(Entity &other);
-	
+	void loadTexture(std::string name);
+	void setTextureColor(float r, float g, float b, float a);
+
 	/* properties */
 	void setName(std::string name);
 	std::string getName();

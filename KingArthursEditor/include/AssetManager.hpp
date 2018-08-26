@@ -1,6 +1,7 @@
 #ifndef ASSETMANAGER_HPP
 #define ASSETMANAGER_HPP
 
+#include <stdio.h>
 #include <string>
 #include <unordered_map>
 #include <assert.h>

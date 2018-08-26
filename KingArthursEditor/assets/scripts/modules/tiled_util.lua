@@ -21,6 +21,22 @@ M.get_spawnpoints = function (object)
 			local py = object.y + math.random() * object.height
 			points[#points + 1] = vec2.new(px, py)
 		end
+	elseif object.shape == 'ellipse' then
+		for i=1, count do
+			local rx = object.width * 0.5
+			local ry = object.height * 0.5
+			local cx = object.x + rx
+			local cy = object.y + ry
+			
+			local angle = math.random() * 2 * math.pi
+			local r = math.random()
+			local rw = rx * math.sqrt(r)
+			local rh = ry * math.sqrt(r)
+			points[#points + 1] = vec2.new(
+				cx + rw * math.cos(angle),
+				cy + rh * math.sin(angle)
+			)
+		end
 	end
 
 	return points

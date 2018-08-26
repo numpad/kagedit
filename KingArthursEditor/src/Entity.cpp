@@ -12,7 +12,8 @@
  * @param origin Origin of the sprite: left-top=(0, 0), right-bottom=(1, 1).
  */
 void Entity::setTexture(const sf::Texture &texture, glm::vec2 origin) {
-	this->sprite.setTexture(texture);
+	printf("setting texture: %dx%d\n", texture.getSize().x, texture.getSize().y);
+	this->sprite.setTexture(texture, true);
 	sf::Vector2f center(texture.getSize().x * origin.x, texture.getSize().y * origin.y);
 	this->sprite.setOrigin(center);
 }
@@ -66,6 +67,18 @@ Entity::~Entity() {
 
 float Entity::distanceTo(Entity &other) {
 	return glm::distance(this->getPos(), other.getPos());
+}
+
+void Entity::setTextureColor(float r, float g, float b, float a) {
+	this->sprite.setColor(sf::Color(
+		r * 255, g * 255, b * 255, a * 255
+	));
+}
+
+void Entity::loadTexture(std::string name) {
+	sf::Texture *tex = AssetManager::load("assets/" + name);
+	if (tex != nullptr)
+		this->setTexture(*tex, glm::vec2(0.5f));
 }
 
 void Entity::setName(std::string name) {

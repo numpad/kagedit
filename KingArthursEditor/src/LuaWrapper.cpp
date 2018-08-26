@@ -17,6 +17,8 @@ void LuaWrapper::REGISTER_PLAYER(sol::state *lua) {
 		"acc", sol::property(&Entity::setAcc, &Entity::getAcc),
 		"new", sol::no_constructor,
 		"distanceTo", &Entity::distanceTo,
+		"setTexture", &Entity::loadTexture,
+		"setTextureColor", &Entity::setTextureColor,
 		"pickup", [](Entity &e, Item *i){ i->onPickup(e); },
 		"getName", &Entity::getName,
 		"setName", &Entity::setName,
