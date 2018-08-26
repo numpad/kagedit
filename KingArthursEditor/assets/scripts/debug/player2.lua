@@ -1,6 +1,6 @@
 
 function spawnPlayer(pos)
-	local e = Player.new(pos)
+	local e = Mob.new(pos)
 
 	local c = KeyboardController.new(e)
 	c:map('left', 'Left')

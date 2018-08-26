@@ -38,12 +38,13 @@ void LuaWrapper::REGISTER_PLAYER(sol::state *lua) {
 		"update", &Entity::update
 	);
 
-	lua->new_usertype<Player>(
-		"Player",
+	lua->new_usertype<Mob>(
+		"Mob",
 		sol::base_classes, sol::bases<Entity>(),
-		"new", sol::factories([](glm::vec2 pos){ return new Player(pos, LuaWrapper::window); }),
-		"setController", &Player::setController,
-		"addController", &Player::addController
+		"new", sol::factories([](glm::vec2 pos){ return new Mob(pos); }),
+		"setController", &Mob::setController,
+		"addController", &Mob::addController,
+		"deleteController", &Mob::deleteController
 	);
 }
 
@@ -71,7 +72,7 @@ void LuaWrapper::REGISTER_CASTS(sol::state &lua) {
 	lua.create_named_table("__pointers__");
 	lua["__pointers__"]["typecast"] = lua.create_table_with(
 		"toEntity",			&luaapi_ptrcast<Entity>,
-		"toPlayer",			&luaapi_ptrcast<Player>,
+		"toMob",			&luaapi_ptrcast<Mob>,
 		"toItem",			&luaapi_ptrcast<Item>
 	);
 
@@ -243,6 +244,18 @@ void LuaWrapper::REGISTER_CONTROLLERS(sol::state &lua) {
 		sol::base_classes, sol::bases<Controller>(),
 		"new", sol::factories([](Entity *e){ return new KeyboardController(e); }),
 		"map", [](KeyboardController &self, const char *name, const char *key){ self.mapKey(std::string(name), Util::StringToKey(key)); }
+	);
+	
+	lua.new_usertype<MouseController>(
+		"MouseController",
+		sol::base_classes, sol::bases<Controller>(),
+		"new", sol::factories([](Entity *e){ return new MouseController(e, LuaWrapper::window); })
+	);
+	
+	lua.new_usertype<JoystickController>(
+		"JoystickController",
+		sol::base_classes, sol::bases<Controller>(),
+		"new", sol::factories([](Entity *e, int joy_id){ return new JoystickController(e, joy_id); })
 	);
 }
 

@@ -21,7 +21,6 @@ extern "C" {
 #include <tinydir.h>
 
 #include "Entity.hpp"
-#include "Player.hpp"
 #include "Item.hpp"
 #include "EventManager.hpp"
 #include "TileMap.hpp"

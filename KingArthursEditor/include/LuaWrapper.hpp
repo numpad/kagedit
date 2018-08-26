@@ -14,7 +14,7 @@
 #include <imgui.h>
 
 #include "Entity.hpp"
-#include "Player.hpp"
+#include "Mob.hpp"
 
 #include "Item.hpp"
 #include "ItemGun.hpp"
@@ -22,6 +22,8 @@
 
 #include "Controller.hpp"
 #include "KeyboardController.hpp"
+#include "MouseController.hpp"
+#include "JoystickController.hpp"
 
 #include "EventManager.hpp"
 #include "Util.hpp"

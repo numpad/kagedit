@@ -46,9 +46,19 @@ end
 M.spawn_object = function (object)
 	local spawn_points = M.get_spawnpoints(object)
 	for _, p in pairs(spawn_points) do
-		local entity = _G[object.properties.entity].new(p)
+		local spawn_name = object.properties.entity
+		if spawn_name == 'Player' then
+			spawn_name = 'Mob'
+		end
+
+		local entity = _G[spawn_name].new(p)
 		
-		if object.properties.entity == 'Player' then player = entity end
+		if object.properties.entity == 'Player' then
+			player = entity
+			entity:addController(KeyboardController.new(entity))
+			entity:addController(MouseController.new(entity))
+			entity:setTexture('images/kenney-topdown/Survivor 1/survivor1_gun.png')
+		end
 		
 		if object.properties.entity_type == 'item' then
 			world:spawnItem(entity)
