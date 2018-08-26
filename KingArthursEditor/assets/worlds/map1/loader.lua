@@ -9,7 +9,7 @@ for i, layer in pairs(world_data.layers) do
 		if layer.visible then
 			world:loadLayer(layer.data, 'images/tilesheet_complete.png', layer.width, layer.height, world_data.tilewidth)
 		end
-	elseif layer.type == 'objectgroup' and layer.name == 'Spawn Areas' then
+	elseif layer.type == 'objectgroup' then
 		for i, object in pairs(layer.objects) do
 			if object.type == 'spawner' then
 				tiled.spawn_object(object)
@@ -23,8 +23,8 @@ world.events:add('on_update',
 	function (dt)
 		if not draggingCamera() then
 			local dir = player.pos - world.camera.pos
-			dir = dir / 6.5
-			world.camera.pos = world.camera.pos + dir
+			dir = dir / 6
+			world.camera.pos = world.camera.pos + dir * (dt * 60)
 		end
 	end
 )

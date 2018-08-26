@@ -29,8 +29,6 @@ void LuaWrapper::REGISTER_PLAYER(sol::state *lua) {
 		"setVel", &Entity::setVel,
 		"getAcc", &Entity::getAcc,
 		"setAcc", &Entity::setAcc,
-		"getDrag", &Entity::getDrag,
-		"setDrag", &Entity::setDrag,
 		"getViewDirection", &Entity::getViewDirection,
 		"getViewAngle", &Entity::getViewAngle,
 		"setViewTarget", &Entity::setViewTarget,

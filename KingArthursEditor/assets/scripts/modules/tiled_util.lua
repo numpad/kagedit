@@ -46,14 +46,9 @@ end
 M.spawn_object = function (object)
 	local spawn_points = M.get_spawnpoints(object)
 	for _, p in pairs(spawn_points) do
-		local spawn_name = object.properties.entity
-		if spawn_name == 'Player' then
-			spawn_name = 'Mob'
-		end
-
-		local entity = _G[spawn_name].new(p)
+		local entity = _G[object.properties.entity].new(p)
 		
-		if object.properties.entity == 'Player' then
+		if object.properties.entity_template == 'Player' then
 			player = entity
 			entity:addController(KeyboardController.new(entity))
 			entity:addController(MouseController.new(entity))

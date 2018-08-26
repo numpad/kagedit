@@ -470,7 +470,8 @@ return {
           rotation = 0,
           visible = true,
           properties = {
-            ["entity"] = "Player"
+            ["entity"] = "Mob",
+            ["entity_template"] = "Player"
           }
         },
         {
@@ -553,7 +554,7 @@ return {
           rotation = 0,
           visible = true,
           properties = {
-            ["count"] = 10,
+            ["count"] = 30,
             ["entity"] = "ItemGun",
             ["entity_type"] = "item"
           }

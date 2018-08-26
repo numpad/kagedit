@@ -286,7 +286,8 @@
   </object>
   <object id="33" name="Player Spawn" type="spawner" x="1136.47" y="1791.95">
    <properties>
-    <property name="entity" value="Player"/>
+    <property name="entity" value="Mob"/>
+    <property name="entity_template" value="Player"/>
    </properties>
    <point/>
   </object>

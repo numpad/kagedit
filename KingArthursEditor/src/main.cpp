@@ -123,16 +123,6 @@ void handle_events(sf::Window &window, bool render_imgui, EventManager *manager)
 	}
 }
 
-glm::vec2 get_axis(unsigned int joystick, sf::Joystick::Axis axis1, sf::Joystick::Axis axis2) {
-	if (!sf::Joystick::isConnected(joystick) || !sf::Joystick::hasAxis(joystick, axis1) || !sf::Joystick::hasAxis(joystick, axis2))
-		return glm::vec2(0.0f);
-	
-	return glm::vec2(
-		sf::Joystick::getAxisPosition(joystick, axis1) * 0.01f,
-		sf::Joystick::getAxisPosition(joystick, axis2) * 0.01f
-	);
-}
-
 std::vector<std::string> list_files(std::string path = ".") {
 	tinydir_dir dir;
 	tinydir_open(&dir, path.c_str());

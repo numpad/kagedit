@@ -22,7 +22,8 @@ local function on_mousebutton(x, y, button, pressed)
 				by_entity.acc = vec2x.random() * (5 + math.random() * 15)
 			end
 		)
-
+		
+		item:setTextureColor(0.7, 0.9, 0.6, 1.0)
 		world:spawnItem(item)
 	end
 end
